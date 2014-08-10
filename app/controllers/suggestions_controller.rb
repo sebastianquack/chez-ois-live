@@ -60,8 +60,8 @@ class SuggestionsController < ApplicationController
 		)
 		if @suggestion.save
 			#update_user_name(cookies['user_hash'], params[:name])
-			Pusher['avatar_chat2'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-			#Pusher['avatar_chat2'].trigger('read_message', { :message => @suggestion.name + ": " + @suggestion.content })
+			Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+			#Pusher['chez_ois_chat'].trigger('read_message', { :message => @suggestion.name + ": " + @suggestion.content })
 			render json: @suggestion
   	end
   end
@@ -110,7 +110,7 @@ class SuggestionsController < ApplicationController
 		suggestion.status = 1
 		suggestion.voting_started_at = Time.now.to_i
 		suggestion.save
-		Pusher['avatar_chat2'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+		Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
 		render json: suggestion
 	end
 
@@ -125,7 +125,7 @@ class SuggestionsController < ApplicationController
 		if time_dif > 59
 			suggestion.status = 2
 			suggestion.save
-			Pusher['avatar_chat2'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+			Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
 		end
 		
 		render json: suggestion	
@@ -187,8 +187,8 @@ class SuggestionsController < ApplicationController
 								
 		suggestion.save
 
-		Pusher['avatar_chat2'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-		Pusher['avatar_chat2'].trigger('update_highscores', load_highscores)
+		Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
 		render json: suggestion
 	end
 
@@ -204,9 +204,9 @@ class SuggestionsController < ApplicationController
 
 		user_reward(@suggestion, 5)
 		
-		Pusher['avatar_chat2'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-		#Pusher['avatar_chat2'].trigger('read_message', { :message => "Vorschlag angenommen: " + @suggestion.content })
-		Pusher['avatar_chat2'].trigger('update_highscores', load_highscores)
+		Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+		#Pusher['chez_ois_chat'].trigger('read_message', { :message => "Vorschlag angenommen: " + @suggestion.content })
+		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
 
 		render json: @suggestion
 	end
@@ -218,9 +218,9 @@ class SuggestionsController < ApplicationController
 
 		user_reward(@suggestion, -5)
 
-		Pusher['avatar_chat2'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-		#Pusher['avatar_chat2'].trigger('read_message', { :message => "Vorschlag abgelehnt: " + @suggestion.content })
-		Pusher['avatar_chat2'].trigger('update_highscores', load_highscores)
+		Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+		#Pusher['chez_ois_chat'].trigger('read_message', { :message => "Vorschlag abgelehnt: " + @suggestion.content })
+		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
 
 		render json: @suggestion
 	end
@@ -249,7 +249,7 @@ class SuggestionsController < ApplicationController
 	
 	def clear_highscores
 		UserScore.destroy_all(:avatar_id => params[:avatar_id])
-		Pusher['avatar_chat2'].trigger('update_highscores', load_highscores)
+		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
 		render json: load_highscores
 	end
 

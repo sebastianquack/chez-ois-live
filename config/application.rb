@@ -62,13 +62,6 @@ module AvatarChat
     config.admin_user = "admin"
     config.admin_password = ENV['chez_ois_admin_password']
     
-    require 'pusher'
-  	Pusher.app_id = ENV['chez_ois_pusher_app_id']
-    Pusher.key    = ENV['chez_ois_pusher_key']
-    Pusher.secret = ENV['chez_ois_pusher_secret']
-  	Pusher.url = ENV['chez_ois_pusher_url']
-    
-  	#Pusher.logger = Rails.logger
     
   end
 end
