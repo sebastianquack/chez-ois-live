@@ -140,7 +140,27 @@ class SuggestionsController < ApplicationController
 				:suggestion_id => suggestion.id
 		})
 		
-		unless params[:abort]
+		if params[:abort]
+
+			now = Time.now.to_i
+			if now < (suggestion.voting_started_at.to_i + 55)
+				suggestion.voting_started_at = now - 55
+			end
+
+    elsif params[:transmit]
+
+			now = Time.now.to_i
+			if now < (suggestion.voting_started_at.to_i + 50)
+				suggestion.voting_started_at = now - 50
+			end
+      
+      if suggestion.read == false
+				speech_output = suggestion.name + ' sagt: ' + suggestion.content
+        Pusher['chez_ois_chat'].trigger('read_suggestions', {:avatar_id => params[:avatar_id], :content => speech_output})
+        suggestion.read = true
+      end
+      
+    else
 
 			if user_vote # the user has already voted on this
 				logger.debug 'vote exists'
@@ -176,12 +196,6 @@ class SuggestionsController < ApplicationController
 		
 		end			
 		
-		if params[:abort]
-				now = Time.now.to_i
-				if now < (suggestion.voting_started_at.to_i + 55)
-					suggestion.voting_started_at = now - 55
-			end
-		end
 
 		if params[:top_boost]
 				suggestion.name2 = cookies[:user_name]

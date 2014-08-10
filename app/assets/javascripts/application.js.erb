@@ -192,10 +192,24 @@ function retireSuggestion(suggestion_id) {
 	//current_suggestions = null;
 	$.ajax({
 		type: "POST",
-	  url: baseURL + "suggestions/" + suggestion_id + "/retire2",	  
+	  url: baseURL + "suggestions/" + suggestion_id + "/retire",	  
    	data: "avatar_id=" + avatar_id,
    	success: function(msg){
    		console.log('retired: ' + msg);
+   	},
+   	error: function(XMLHttpRequest, textStatus, errorThrown) {
+   		console.log(errorThrown);
+   	}
+ 	});	
+}
+
+function transmitSuggestion(suggestion_id) {
+	$.ajax({
+		type: "POST",
+	  url: baseURL + "suggestions/" + suggestion_id + "/vote",	  
+   	data: "transmit=1&avatar_id=" + avatar_id,
+   	success: function(msg){
+   		console.log('aborted: ' + msg);
    	},
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
    		console.log(errorThrown);
@@ -241,17 +255,21 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 		}
 		
 		if(myIndex == 0) {
-			item += '<span class="suggestion_content">' + (myIndex + 1) + '. <span class="magenta">"' + suggestion.content + '" </span></span><br/>';
-		} else {
-			item += '<span class="suggestion_content">' + (myIndex + 1) + '. "' + suggestion.content + '" </span><br/>';
-		}
+			item += '<span class="suggestion_content">' + suggestion.name + ': <span class="magenta">"' + suggestion.content + '" </span></span><br/>';
+      item += '<span class="suggestion_details">wird übertragen...</span><br/>';
+    
+    } else {
+			item += '<span class="suggestion_content">' + suggestion.name + ': "' + suggestion.content + '"</span><br/>';
 		
-		time_string = minutes_left + ':' + pad(seconds_left);
-		if(minutes_left == 0 && seconds_left <= 5) {
-			time_string = '<span class="magenta">' + time_string + '</span>';
-		}
+  		time_string = minutes_left + ':' + pad(seconds_left);
+  		if(minutes_left == 0 && seconds_left <= 5) {
+  			time_string = '<span class="magenta">' + time_string + '</span>';
+  		}
 		
-		item += '<span class="suggestion_details">Prosts: ' + suggestion.score + ', noch ' + time_string + '</span><br/>';
+  		item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '</span>';
+		
+    }
+		
 		
 		if(pathArray[1] != 'displays') {
 			item += '<div class="suggestion_controls">'
@@ -259,7 +277,8 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
       if(pathArray[1] != 'avatar') {
 				
         if(index == 0) {
-						pro_text = 'Sag\'s nochmal';
+          /*
+            pro_text = 'Sag\'s nochmal';
 						pro_button = '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&top_boost=1&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" /> '; 
 						if(user_vote) {
 							if(user_vote.vote == 0) {
@@ -273,7 +292,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 						if(!(minutes_left == 0 && seconds_left <= 5)) {
 							contra_text = 'Löschen';
 							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&abort=1&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />'; 
-						}
+						}*/
 				} else {
 						pro_text = 'Prost';
 						contra_text = 'Gähn';
@@ -299,24 +318,26 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 				}
 			
       // moderator
-    } else {
-				item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/accept?avatar_id=' + avatar_id + '" class="ajax" value="accept" /> ';
-				item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
-			}
+      } else {
+        if(index > 0) {
+          //item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/accept?avatar_id=' + avatar_id + '" class="ajax" value="accept" /> ';
+          item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
+        }
+      }
 			item += '</div>';
 			
 		}
-	
+	 
 		// read aloud new top suggestions
 		if(index == 0) {
 			// if suggestion just arrived at top - or got a boost in votes
-			if(suggestion.id != top_suggestion_id || (suggestion.id == top_suggestion_id && suggestion.score > top_suggestion_score)) {
-				var speech_output = suggestion.name + ' sagt: ' + suggestion.content;
+			if(suggestion.id != top_suggestion_id) {
+				/*var speech_output = suggestion.name + ' sagt: ' + suggestion.content;
 				if(suggestion.id == top_suggestion_id && suggestion.score > top_suggestion_score) {
 						speech_output = suggestion.name2 + ' sagt: ' + suggestion.content;
 				}
-        console.log('foo')
-				read_with_queue(speech_output);
+				read_with_queue(speech_output);*/
+        transmitSuggestion(suggestion.id)
 			}
 			top_suggestion_id = suggestion.id;
 			top_suggestion_score = suggestion.score;
@@ -459,8 +480,9 @@ channel.bind('update_suggestions_' + avatar_id, function(data) {
 		current_suggestions = data;
 		render_suggestions(data, 'push');
 });
-channel.bind('read_message', function(data) {
- 		readme(data.message);
+channel.bind('read_suggestions', function(data) {
+    console.log(data)
+ 		read_with_queue(data.content);
 });
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		

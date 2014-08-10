@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130627065950) do
+ActiveRecord::Schema.define(:version => 20140810143941) do
 
   create_table "avatars", :force => true do |t|
     t.string   "name"
@@ -62,13 +62,14 @@ ActiveRecord::Schema.define(:version => 20130627065950) do
     t.integer  "score"
     t.integer  "status"
     t.string   "ip_address"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.string   "user_hash"
     t.integer  "avatar_id"
     t.string   "time_string"
     t.string   "voting_started_at"
     t.string   "name2"
+    t.boolean  "read",              :default => false
   end
 
   create_table "user_scores", :force => true do |t|

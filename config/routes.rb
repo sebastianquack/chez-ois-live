@@ -13,7 +13,7 @@ AvatarChat::Application.routes.draw do
 
 	match '/suggestions/:id/vote' => 'suggestions#vote'
 	match '/suggestions/:id/start_vote' => 'suggestions#start_vote'
-	match '/suggestions/:id/retire2' => 'suggestions#retire'
+	match '/suggestions/:id/retire' => 'suggestions#retire'
 	match '/suggestions/:id/accept' => 'suggestions#accept'
 	match '/suggestions/:id/decline' => 'suggestions#decline'
 
