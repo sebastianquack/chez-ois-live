@@ -28,7 +28,8 @@
 		</div>
 	<% end %>
 	<div id="avatar_container" class="container">
-    <h3>Ansagen für den Barvatar</h3>
+    <h3>Sag dem Barvatar, was er/sie tun soll!</h3>
+    <div id="suggestion_transmit"></div>
     <div id="suggestions_top"></div>
   </div>
 	
@@ -37,6 +38,7 @@
     <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>
     <input id="suggestion_submit" type="submit" value="Ansagen"/>
     <input id="chat_name" type="hidden" size="10" value="<%= @user_name %>"/>
+    <div id="suggestion_message"></div>
   </form>
   
 </div>

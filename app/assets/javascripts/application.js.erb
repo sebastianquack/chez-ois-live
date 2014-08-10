@@ -49,6 +49,12 @@ function updateAjaxLinks() {
 	$('.ajax').click(function(event) {
 		//current_suggestions = null; 
 		event.preventDefault();
+
+		if($(this).hasClass('voting')) {
+      //$(this).attr('disabled', 'disabled')
+      //$(this).parent().fadeOut()
+    }
+
 		if($(this).hasClass('confirm')) {
 			if(!confirm('Really?')) {
 				return false;
@@ -156,6 +162,8 @@ var animate_suggestions_update = true;
 var top_suggestion_id = null;
 var top_suggestion_score = null;
 
+var transmit_suggestion = null; // cache to store current transmit suggestion
+
 // check if the order of top suggestions changed
 function suggestions_order_changed(data) {
 	if(!current_suggestions) {
@@ -206,16 +214,29 @@ function retireSuggestion(suggestion_id) {
 function transmitSuggestion(suggestion_id) {
 	$.ajax({
 		type: "POST",
-	  url: baseURL + "suggestions/" + suggestion_id + "/vote",	  
-   	data: "transmit=1&avatar_id=" + avatar_id,
+	  url: baseURL + "suggestions/" + suggestion_id + "/accept",	  
+   	data: "avatar_id=" + avatar_id,
    	success: function(msg){
-   		console.log('aborted: ' + msg);
+   		console.log('accepted: ' + msg);
    	},
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
    		console.log(errorThrown);
    	}
  	});	
 }
+
+function render_transmit_suggestion(suggestion_transmit_data) {
+  if(suggestion_transmit_data) {
+	  var item = '<span class="suggestion_content">' + suggestion_transmit_data.name + ': <span class="magenta">"' + suggestion_transmit_data.content + '" </span></span><br/>';
+    item += '<span class="suggestion_details">wird übertragen...</span><br/>';
+    $('#suggestion_transmit').html(item)
+    transmit_suggestion = suggestion_transmit_data
+  } else {
+    $('#suggestion_transmit').html('')
+    transmit_suggestion = null
+  }
+}
+
 
 // render suggestions relative to specific user identified via cookie
 function render_top_suggestions(suggestions, user_votes, div, suggestion_type, update_type) {
@@ -226,7 +247,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 		//div.append(empty_message);
 		return;
 	}
-	
+	  
 	var list = '<ul>';
 	var myIndex = 0;
 	
@@ -234,115 +255,72 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 		user_vote = user_voted_on(user_votes[suggestion.id], $.cookie('user_hash'));
 		var item = '';
 
-		//var seconds = new Date().getTime() / 1000;
 		var date = new Date();
-		//var milliseconds = date.getTime();
-		//var seconds = Math.floor(milliseconds / 1000);		
 		var seconds = server_time;
 		var time_dif = seconds - suggestion.vote_time; // how old is the suggestion in seconds
 		var time_left = 59 - time_dif;
 		var minutes_left = Math.floor(time_left / 60);
 		var seconds_left = time_left % 60;
-		
-		//console.log(suggestion.content + ' ' + time_left);
-		
+		    
+		// read aloud new top suggestion
+		if(index == 0 && transmit_suggestion == null) {
+			if(suggestion.score >= 0) {
+        transmitSuggestion(suggestion.id)
+        transmit_suggestion = suggestion
+        return true
+			}
+		}
+    
 		if(time_dif > 59) {
 			retireSuggestion(suggestion.id);
 			time_left = 0;
 			minutes_left = 0;
 			seconds_left = 0;
-			//return true;
+			return true;
 		}
+        
+		item += '<span class="suggestion_content">' + suggestion.name + ': "' + suggestion.content + '"</span><br/>';
 		
-		if(myIndex == 0) {
-			item += '<span class="suggestion_content">' + suggestion.name + ': <span class="magenta">"' + suggestion.content + '" </span></span><br/>';
-      item += '<span class="suggestion_details">wird übertragen...</span><br/>';
-    
-    } else {
-			item += '<span class="suggestion_content">' + suggestion.name + ': "' + suggestion.content + '"</span><br/>';
+  	time_string = minutes_left + ':' + pad(seconds_left);
+  	if(minutes_left == 0 && seconds_left <= 5) {
+  		time_string = '<span class="magenta">' + time_string + '</span>';
+  	}
 		
-  		time_string = minutes_left + ':' + pad(seconds_left);
-  		if(minutes_left == 0 && seconds_left <= 5) {
-  			time_string = '<span class="magenta">' + time_string + '</span>';
-  		}
-		
-  		item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '</span>';
-		
-    }
-		
+  	item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '&nbsp;(noch ' + time_string + ')</span>&nbsp;';
 		
 		if(pathArray[1] != 'displays') {
-			item += '<div class="suggestion_controls">'
-			
       if(pathArray[1] != 'avatar') {
 				
-        if(index == 0) {
-          /*
-            pro_text = 'Sag\'s nochmal';
-						pro_button = '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&top_boost=1&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" /> '; 
-						if(user_vote) {
-							if(user_vote.vote == 0) {
-								item += pro_button;
-							}
-						} else {
-							if(!user_vote) {
-								item += pro_button;
-							}
-						}
-						if(!(minutes_left == 0 && seconds_left <= 5)) {
-							contra_text = 'Löschen';
-							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&abort=1&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />'; 
-						}*/
-				} else {
-						pro_text = 'Prost';
-						contra_text = 'Gähn';
+					pro_text = 'Prost';
+					contra_text = 'Contra';
 	
-						if(user_vote) {
-							// user has already voted on this suggestion
-							if(user_vote.vote == 1) {
-								// user voted up, can now only vote down
-								item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
-							} else if(user_vote.vote == 0) {
-								// user is neutral, can vote both ways
-								item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" /> ';
-								item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';		
-							} else if(user_vote.vote == -1) {
-								// user voted down, can now only vote up
-								item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />';
-							}
-						} else {
-							// first vote on this suggestion - user can vote both ways
-							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" /> ';
-							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
-						}				
-				}
+					if(user_vote) {
+						// user has already voted on this suggestion
+						if(user_vote.vote == 1) {
+							// user voted up, can now only vote down
+							item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
+						} else if(user_vote.vote == 0) {
+							// user is neutral, can vote both ways
+							item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
+							item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';		
+						} else if(user_vote.vote == -1) {
+							// user voted down, can now only vote up
+							item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
+						}
+					} else {
+						// first vote on this suggestion - user can vote both ways
+						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
+						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
+					}				
 			
       // moderator
       } else {
         if(index > 0) {
-          //item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/accept?avatar_id=' + avatar_id + '" class="ajax" value="accept" /> ';
-          item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
+          item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
         }
-      }
-			item += '</div>';
-			
+      }			
 		}
-	 
-		// read aloud new top suggestions
-		if(index == 0) {
-			// if suggestion just arrived at top - or got a boost in votes
-			if(suggestion.id != top_suggestion_id) {
-				/*var speech_output = suggestion.name + ' sagt: ' + suggestion.content;
-				if(suggestion.id == top_suggestion_id && suggestion.score > top_suggestion_score) {
-						speech_output = suggestion.name2 + ' sagt: ' + suggestion.content;
-				}
-				read_with_queue(speech_output);*/
-        transmitSuggestion(suggestion.id)
-			}
-			top_suggestion_id = suggestion.id;
-			top_suggestion_score = suggestion.score;
-		}
-				
+	 				
 		list += '<li>' + item + '</li>';
 		myIndex++;
 	});
@@ -362,7 +340,11 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 
 function render_suggestions(data, update_type) {
 		//render_new_suggestions(data.suggestions_new, data.user_votes_new, $('#suggestions_new'), 'new', update_type);
-		render_top_suggestions(data.suggestions_top, data.user_votes_top, $('#suggestions_top'), 'top', update_type);
+    if(update_type != 'timer') {
+      render_transmit_suggestion(data.suggestion_transmit);
+    }
+    render_top_suggestions(data.suggestions_top, data.user_votes_top, $('#suggestions_top'), 'top', update_type);
+
 		updateAjaxLinks();
 }
 
@@ -381,7 +363,16 @@ function updateVotingTimers() {
 	if(!current_suggestions) {
 		updateSuggestions();
 	} else {
-		render_suggestions(current_suggestions, 'timer');
+    //console.log(transmit_suggestion)
+    if(transmit_suggestion) {
+      console.log(server_time - transmit_suggestion.vote_time)
+      if(server_time - transmit_suggestion.vote_time > 10) {
+        retireSuggestion(transmit_suggestion.id)
+        transmit_suggestion = null
+      }
+    }
+    render_transmit_suggestion(transmit_suggestion)
+    render_suggestions(current_suggestions, 'timer');
 	}
 }
 

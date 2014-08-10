@@ -211,6 +211,12 @@ span.suggestion_label {
 	min-height: 300px;
 }
 
+#suggestion_transmit {
+	padding-top: 5px;
+	padding-left: 5px;
+	min-height: 3em;	
+}
+
 #suggestions_top {
 	padding-top: 5px;
 	padding-left: 5px;
