@@ -12,25 +12,6 @@
 
 <% end %>
 
-<div id="chat_container" class="container">
-	
-	<h3>Flüstern an der Theke</h3>
-	<div id="suggestions_new"></div>	
-	<% unless params[:view] == 'projection' %>
-	<form id="suggestion_input_form">
-		<span class="suggestion_label"><%= @user_name %></span>
-		<input id="suggestion_input" type="text" maxlength="79"/>
-		<input id="suggestion_submit" type="submit" value="Flüstern"/>
-		<input id="chat_name" type="hidden" size="10" value="<%= @user_name %>"/>
-	</form>
-	<!--<input id="sound_on" type="checkbox" value="sound_on"/>Sound on-->
-	<div id="suggestion_message"></div>	
-	<% end %>
-
-</div>
-
-</div>
-
 <div class="invisible_container">
 	<% unless params[:view] == 'terminal' %>
 		<div class="container stream_container">
@@ -47,9 +28,17 @@
 		</div>
 	<% end %>
 	<div id="avatar_container" class="container">
-	<h3>Ansagen für den Barvatar</h3>
-	<div id="suggestions_top"></div>
-</div>
+    <h3>Ansagen für den Barvatar</h3>
+    <div id="suggestions_top"></div>
+  </div>
+	
+  <form id="suggestion_input_form" class="container">
+	  <!--span class="suggestion_label"><%= @user_name %></span-->
+    <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>
+    <input id="suggestion_submit" type="submit" value="Ansagen"/>
+    <input id="chat_name" type="hidden" size="10" value="<%= @user_name %>"/>
+  </form>
+  
 </div>
 
 <% unless params[:view] == 'terminal' %>

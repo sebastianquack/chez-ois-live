@@ -50,14 +50,16 @@ class SuggestionsController < ApplicationController
 		end
 		@suggestion = Suggestion.new(
 				:time_string => Time.now.to_i,
+        :voting_started_at => Time.now.to_i,
 				:content => params[:content], 
 				:name => params[:name],
 				:avatar_id => params[:avatar_id],
 				:user_hash => cookies['user_hash'],
 				:score => 0,
-				:status => 0,
+				:status => 1, # go directly to voting
 				:ip_address => request.remote_ip
 		)
+        
 		if @suggestion.save
 			#update_user_name(cookies['user_hash'], params[:name])
 			Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))

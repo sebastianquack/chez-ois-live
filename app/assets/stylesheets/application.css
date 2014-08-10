@@ -147,7 +147,6 @@ h3 {
 }
 
 #suggestions_new table {
-	position:absolute;
 	bottom: 55px;
 }
 
@@ -176,41 +175,30 @@ h3 {
 }
 
 #suggestion_input_form {
-	position: absolute;
-	bottom: 0px;
-	left: 0px;
+		width: 380px;
 }
 
 span.suggestion_label {
 	font-size: 0.9em;
-	position: absolute;
-	bottom: 12px;
-	left: 12px;
 	color: #aaa;
 	width: 100px;
 	word-break: break-all;
 }
 
 #suggestion_input {
-	position: absolute;
 	bottom: 10px;
 	left: 90px;
 	font-size: 0.9em;
-	width: 180px;
+	width: 280px;
 }
 
 #suggestion_submit {
-	position: absolute;
-	bottom: 11px;
-	left: 328px;
+	float: right;
 }
 
 #suggestion_message {
 	font-size: 0.8em;
 	color: #aaa;
-	position: absolute;
-	bottom: 36px;
-	left: 88px;
 }
 
 .chat_status a {
@@ -219,7 +207,7 @@ span.suggestion_label {
 
 #avatar_container {
 	float: left;
-	width: 240px;
+	width: 380px;
 	min-height: 300px;
 }
 
@@ -269,7 +257,7 @@ span.suggestion_label {
 }
 
 #highscore_container {
-	width: 174px;
+	width: 380px;
 	font-size: 0.9em;
 	margin-bottom: 10px;
 }

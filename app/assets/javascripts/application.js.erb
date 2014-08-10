@@ -38,7 +38,7 @@ if(!avatar_id) {
 var pathArray = window.location.pathname.split('/');
 //alert(pathArray[1]);
 var sound_on = false;
-if(pathArray[1] == 'avatar' || urlParams["sound_on"]) {
+if(urlParams["sound_on"]) {
 	sound_on = true;
 }
 
@@ -73,6 +73,7 @@ function pad(num) {
   return num;
 }
 
+/*	
 // render suggestions relative to specific user identified via cookie
 function render_new_suggestions(suggestions, user_votes, div, suggestion_type, update_type) {
 
@@ -102,7 +103,6 @@ function render_new_suggestions(suggestions, user_votes, div, suggestion_type, u
 			max_height = 23;
 		}
 
-	
 //	$.each(suggestions, function(index, suggestion) {
 		$(suggestions.reverse()).each(function(index, suggestion) { 
 
@@ -111,7 +111,7 @@ function render_new_suggestions(suggestions, user_votes, div, suggestion_type, u
 		item += '<tr>';
 
 		var date = new Date(suggestion.time*1000);
-		item += '<td class="chat_details">'+ suggestion.name /*+ ' [' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + '] ' */+ '</span>';		
+		item += '<td class="chat_details">'+ suggestion.name + '</span>';		
 		item += '<td class="chat_content"> ' + suggestion.content + '</td>';
 		if(pathArray[1] != 'displays') {
 			item += '<td class="chat_status">';
@@ -149,6 +149,7 @@ function render_new_suggestions(suggestions, user_votes, div, suggestion_type, u
 		
 	div.html('<table>' + rows_html + '</table>');
 }
+*/
 
 var current_suggestions = null; //cache to store current suggestion data, set to null to reload
 var animate_suggestions_update = true;
@@ -206,9 +207,9 @@ function retireSuggestion(suggestion_id) {
 function render_top_suggestions(suggestions, user_votes, div, suggestion_type, update_type) {
 	
 	if(suggestions.length == 0 && pathArray[1] != 'displays') {
-		empty_message = $('<div>').addClass('empty_message').html('Heckt an der Flüster-Theke gemeinsam aus, was der Barvatar sprechen und machen soll. Die Ansagen mit den meisten Prosts hört der Barvatar!');
+		//empty_message = $('<div>').addClass('empty_message').html('Heckt an der Flüster-Theke gemeinsam aus, was der Barvatar sprechen und machen soll. Die Ansagen mit den meisten Prosts hört der Barvatar!');
 		div.html('');
-		div.append(empty_message);
+		//div.append(empty_message);
 		return;
 	}
 	
@@ -254,8 +255,10 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 		
 		if(pathArray[1] != 'displays') {
 			item += '<div class="suggestion_controls">'
-			if(pathArray[1] != 'avatar') {
-				if(index == 0) {
+			
+      if(pathArray[1] != 'avatar') {
+				
+        if(index == 0) {
 						pro_text = 'Sag\'s nochmal';
 						pro_button = '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&top_boost=1&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" /> '; 
 						if(user_vote) {
@@ -268,7 +271,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 							}
 						}
 						if(!(minutes_left == 0 && seconds_left <= 5)) {
-							contra_text = 'Kipp weg';
+							contra_text = 'Löschen';
 							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&abort=1&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />'; 
 						}
 				} else {
@@ -294,8 +297,9 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
 						}				
 				}
-			// moderator
-			} else {
+			
+      // moderator
+    } else {
 				item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/accept?avatar_id=' + avatar_id + '" class="ajax" value="accept" /> ';
 				item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
 			}
@@ -311,6 +315,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 				if(suggestion.id == top_suggestion_id && suggestion.score > top_suggestion_score) {
 						speech_output = suggestion.name2 + ' sagt: ' + suggestion.content;
 				}
+        console.log('foo')
 				read_with_queue(speech_output);
 			}
 			top_suggestion_id = suggestion.id;
@@ -335,7 +340,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 }
 
 function render_suggestions(data, update_type) {
-		render_new_suggestions(data.suggestions_new, data.user_votes_new, $('#suggestions_new'), 'new', update_type);
+		//render_new_suggestions(data.suggestions_new, data.user_votes_new, $('#suggestions_new'), 'new', update_type);
 		render_top_suggestions(data.suggestions_top, data.user_votes_top, $('#suggestions_top'), 'top', update_type);
 		updateAjaxLinks();
 }
