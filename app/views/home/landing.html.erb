@@ -1,0 +1,38 @@
+<div class="wood"></div>
+
+<div class="container">
+	<h2>Willkommen, du bist jetzt live bei <span class="magenta">Chez Icke</span><span id="comma"><% if @user_name %>, <%end%></span><span id="display_user_name"><%= @user_name %></span>!</h2>
+	<a style="font-size: 0.9em" href="http://impulse.chez-icke.com?redirect_off=1">alle Termine sehen</a>
+</div>
+
+<div id="name_container" class="container" style="clear:both">
+	<h3>Wie möchtest du heißen?</h3>
+	<form id="name_input_form">
+	<input id="chat_name" type="text" size="10" value="" maxlength="10"/>
+	<input id="name_submit" type="submit" value="Ok"/>
+	</form>
+	<span id="name_message"></span>
+</div>
+
+<div style="clear:both"></div>
+
+	<% @avatars.each do |avatar| %>
+	<div class="fix_embed_container container">
+		<div class="fix_embed">
+		<% if params[:local_embed] %>
+			<%= avatar.place.fix_stream_embed_local.html_safe if avatar.place.fix_stream_embed_local %>
+		<% else %>
+			<%= avatar.place.fix_stream_embed.html_safe %>
+		<% end %>
+		</div>
+		<a class="entry_link" href="/play?avatar_id=<%= avatar.id %>&place_id=<%= avatar.place_id %>">Klicke hier, um <%= avatar.name %> in <%= avatar.place.name %> zu steuern!</a>
+	</div>
+	<% end %>
+
+<div class="global_highscores_container container" style="clear:both">
+	<h3>Die ewige Lokalrunde</h3>
+	<div id="global_highscores"></div>
+</div>
+
+
+

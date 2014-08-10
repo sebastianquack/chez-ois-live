@@ -1,0 +1,71 @@
+<div class="wood"></div>
+
+<div class="welcome_column">
+
+<div id="welcome_container" class="container">
+	<% if @avatar %>
+		<h2><%= @avatar.name %> in <%= @avatar.place.name %></h2>
+	<% else %>
+		<% @avatars.each do |avatar| %>
+			<a class="entry_link" href="<%=request.fullpath%>?avatar_id=<%= avatar.id %>&place_id=<%= avatar.place_id %>"><%= avatar.name %> in <%= avatar.place.name %></a><br/>
+			<a class="entry_link" href="<%=request.fullpath%>?avatar_id=<%= avatar.id %>&place_id=<%= avatar.place_id %>&local_embed=1"><%= avatar.name %> in <%= avatar.place.name %> (local)</a><br/>
+		<% end %>
+	<% end %>
+</div>
+
+<div id="highscore_container" class="container">
+	<h3>Lokalrunde</h3>
+	<% if @avatar %>
+	<div id="highscores"></div>
+	<% end %>
+</div>
+
+</div>
+
+<div class="chat_column">
+
+<div id="suggestions_container" class="container">
+	<h3>Ansagen für den Barvatar</h3>
+	<% if @avatar %>
+	<div id="suggestions_top"></div>
+	<% end %>
+</div>
+
+<div id="chat_container" class="container">
+	
+	<h3>Flüstern an der Theke</h3>
+	<% if @avatar %>
+	<div id="suggestions_new"></div>	
+	<% end %>
+</div>
+
+</div>
+
+<div class="stream_column">
+
+	<% if @avatar %>
+	<div class="container">
+		<div id="pov_embed">		
+		<% if params[:local_embed] %>
+			<%= @avatar.pov_stream_embed_local.html_safe if @avatar.pov_stream_embed_local %>
+		<% else %>
+			<%= @avatar.pov_stream_embed.html_safe %>
+		<% end %>
+		</div>
+	</div>
+	<% end %>
+
+	<% if @avatar %>
+	<div class="container">
+		<div id="pov_embed">
+		<% if params[:local_embed] %>
+			<%= @avatar.place.fix_stream_embed_local.html_safe if @avatar.place.fix_stream_embed_local %>
+		<% else %>
+			<%= @avatar.place.fix_stream_embed.html_safe %>
+		<% end %>
+		</div>
+	</div>
+	<% end %>
+	
+</div>
+

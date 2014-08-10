@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Redirect to:</b>
+  <%= @setting.redirect_to %>
+</p>
+
+<p>
+  <b>Redirect:</b>
+  <%= @setting.redirect %>
+</p>
+
+
+<%= link_to 'Edit', edit_setting_path(@setting) %> |
+<%= link_to 'Back', settings_path %>

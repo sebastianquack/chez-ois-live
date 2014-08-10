@@ -1,0 +1,34 @@
+<%= form_for(@avatar) do |f| %>
+  <% if @avatar.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@avatar.errors.count, "error") %> prohibited this avatar from being saved:</h2>
+
+      <ul>
+      <% @avatar.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+  	<%= f.label :place, "Place" %>
+		<%= f.select :place_id, Place.order('name').collect {|p| [ p.name, p.id ] }, { :include_blank => "None" } %>
+	</div
+  <div class="field">
+    <%= f.label :pov_stream_embed %><br />
+    <%= f.text_area :pov_stream_embed %>
+  </div>
+  <div class="field">
+    <%= f.label :pov_stream_embed_local %><br />
+    <%= f.text_area :pov_stream_embed_local %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

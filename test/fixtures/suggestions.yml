@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  content: MyText
+  name: MyString
+  score: 1
+  status: 1
+  ip_address: MyString
+
+two:
+  content: MyText
+  name: MyString
+  score: 1
+  status: 1
+  ip_address: MyString

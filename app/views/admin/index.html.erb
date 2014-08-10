@@ -1,0 +1,42 @@
+<h2>Admin</h2>
+
+<div class="float_list">
+<h3>Flüstern</h3>
+<ul>
+<% @suggestions_new.each do |suggestion| %>
+	<li>
+	  [<%= suggestion.created_at.strftime("%H:%M") %>]
+		<%= suggestion.name %>: <%= suggestion.content %>
+		<%= link_to "block", "admin/block?ip=#{suggestion.ip_address}&name=#{suggestion.name}", :class=> 'ajax' %>
+	</li>
+<% end %>
+</ul>
+</div>
+
+<div class="float_list">
+<h3>Ansagen</h3>
+<ul>
+<% @suggestions_top do |suggestion| %>
+	<li>
+		[<%= suggestion.created_at.strftime("%H:%M") %>]
+		<%= suggestion.name %>: <%= suggestion.content %>
+		<%= link_to "block", "admin/block?ip=#{suggestion.ip_address}&name=#{suggestion.name}", :class=> 'ajax' %>
+	</li>
+<% end %>
+</ul>
+</div>
+
+<div class="float_list">
+<h3>Blocked</h3>
+<ul>
+<% @blocked_ip_adresses.each do |ip_address| %>
+	<% if ip_address.status == 0 %>
+	<li>
+		[<%= ip_address.updated_at.strftime("%H:%M") %>]
+		<%= ip_address.ip_address %> (<%= ip_address.user_name %>)
+		<%= link_to "unblock", "admin/unblock?ip=#{ip_address.ip_address}", :class=> 'ajax' %>
+	</li>
+	<% end %>
+<% end %>
+</ul>
+</div>

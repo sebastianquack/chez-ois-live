@@ -1,0 +1,21 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @avatar.name %>
+</p>
+<p>
+  <b>Place:</b>
+  <%= @avatar.place.name %>
+</p>
+<p>
+  <b>POV:</b>
+		<% if params[:local_embed] %>
+			<%= @avatar.pov_stream_embed_local.html_safe if @avatar.pov_stream_embed_local %>
+		<% else %>
+			<%= @avatar.pov_stream_embed.html_safe if @avatar.pov_stream_embed %>
+		<% end %>
+</p>
+
+<%= link_to 'Edit', edit_avatar_path(@avatar) %> |
+<%= link_to 'Back', avatars_path %>

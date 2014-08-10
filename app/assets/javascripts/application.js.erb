@@ -1,0 +1,534 @@
+// This is a manifest file that'll be compiled into application.js, which will include all the files
+// listed below.
+//
+// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
+// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
+//
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// the compiled file.
+//
+// WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
+// GO AFTER THE REQUIRES BELOW.
+//
+//= require jquery
+//= require jquery_ujs
+//= require_tree .
+
+var baseURL = window.location.protocol + '//' + window.location.host + '/';
+var urlParams;
+(window.onpopstate = function () {
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+
+    urlParams = {};
+    while (match = search.exec(query))
+       urlParams[decode(match[1])] = decode(match[2]);
+})();
+var place_id = urlParams["place_id"];
+if(!place_id) {
+	place_id = 1;
+}
+var avatar_id = urlParams["avatar_id"];
+if(!avatar_id) {
+	avatar_id = 1;
+}
+var pathArray = window.location.pathname.split('/');
+//alert(pathArray[1]);
+var sound_on = false;
+if(pathArray[1] == 'avatar' || urlParams["sound_on"]) {
+	sound_on = true;
+}
+
+var server_time = null;
+
+function updateAjaxLinks() {
+	$('.ajax').unbind('click');
+	$('.ajax').click(function(event) {
+		//current_suggestions = null; 
+		event.preventDefault();
+		if($(this).hasClass('confirm')) {
+			if(!confirm('Really?')) {
+				return false;
+			}
+		}
+
+		$.ajax({
+			type: "POST",
+		  url: baseURL + $(this).attr("href"),
+  	 	success: function(msg) {
+   			//console.log(msg);
+	   	},
+  	 	error: function(XMLHttpRequest, textStatus, errorThrown) {
+   			console.log(errorThrown);
+	   	}
+	 	});
+	});
+}
+
+function pad(num) {
+	if(num < 10) return "0" + num;
+  return num;
+}
+
+// render suggestions relative to specific user identified via cookie
+function render_new_suggestions(suggestions, user_votes, div, suggestion_type, update_type) {
+
+		var rows_html = '';
+		
+		var chars_per_row = 18.0;
+		var max_height = 15;
+		var rows = 0;
+
+		if(pathArray[2] == 'hd2') {
+			chars_per_row = 20;
+			max_height = 10;		
+		}
+
+		if(pathArray[1] == 'terminal') {
+			chars_per_row = 20;
+			max_height = 18;		
+		}
+	
+		if(pathArray[1] == 'displays' && pathArray[2] == 'projection') {
+			chars_per_row = 24;
+			max_height = 19;
+		}
+
+		if(pathArray[1] == 'displays' && pathArray[2] == 'hd') {
+			chars_per_row = 24;
+			max_height = 23;
+		}
+
+	
+//	$.each(suggestions, function(index, suggestion) {
+		$(suggestions.reverse()).each(function(index, suggestion) { 
+
+		user_vote = user_voted_on(user_votes[suggestion.id], $.cookie('user_hash'))
+		var item = '';
+		item += '<tr>';
+
+		var date = new Date(suggestion.time*1000);
+		item += '<td class="chat_details">'+ suggestion.name /*+ ' [' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + '] ' */+ '</span>';		
+		item += '<td class="chat_content"> ' + suggestion.content + '</td>';
+		if(pathArray[1] != 'displays') {
+			item += '<td class="chat_status">';
+			
+			if(urlParams['moderate']) {		
+				item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="del" />';
+				item += '<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion.ip + '&name=' + suggestion.name + '">';
+			} else {
+				if(suggestion.status == 0) {
+						item += '<input type="button"/ value="Sag\'s dem Barvatar" class="ajax" href="suggestions/' + suggestion.id + '/start_vote?avatar_id=' + avatar_id + '">';
+						//item += '<a href="suggestions/' + suggestion.id + '/start_vote?avatar_id=' + avatar_id + '" class="ajax">Sag\'s dem Avatar!</a>';
+				} else if(suggestion.status == 1) {
+						item += 'Abstimmung...';
+				} else if(suggestion.status > 1) {
+						item += 'vorbei';
+				}
+			}
+			
+			item += '</td>';
+		}
+		item += '</tr>';
+		
+		rows += Math.floor(suggestion.content.length / chars_per_row) + 1.0;
+		rows += 0.5;
+		
+		if(rows < max_height) {
+			rows_html = item + rows_html;
+		} else {	
+			return false;
+		}
+	});
+	suggestions.reverse();
+		
+	//console.log(rows);	
+		
+	div.html('<table>' + rows_html + '</table>');
+}
+
+var current_suggestions = null; //cache to store current suggestion data, set to null to reload
+var animate_suggestions_update = true;
+var top_suggestion_id = null;
+var top_suggestion_score = null;
+
+// check if the order of top suggestions changed
+function suggestions_order_changed(data) {
+	if(!current_suggestions) {
+		return true;
+	}
+	if(!current_suggestions.suggestions_top || !data.suggestions_top) {
+		return true;
+	}
+	if(current_suggestions.suggestions_top.length != data.suggestions_top.length) {
+		return true;
+	}
+	for(i = 0; i < data.suggestions_top.length; i++) {
+		if(data.suggestions_top[i].id != current_suggestions.suggestions_top[i].id) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function user_voted_on(user_votes, user_hash) {
+	if(!user_votes) {
+		return null;
+	}
+	var r = null;
+	$.each(user_votes, function(index, user_vote) {
+		if(user_vote.user == user_hash) {
+			r = user_vote;
+		}
+	});
+	return r;
+}
+
+function retireSuggestion(suggestion_id) {
+	//current_suggestions = null;
+	$.ajax({
+		type: "POST",
+	  url: baseURL + "suggestions/" + suggestion_id + "/retire2",	  
+   	data: "avatar_id=" + avatar_id,
+   	success: function(msg){
+   		console.log('retired: ' + msg);
+   	},
+   	error: function(XMLHttpRequest, textStatus, errorThrown) {
+   		console.log(errorThrown);
+   	}
+ 	});	
+}
+
+// render suggestions relative to specific user identified via cookie
+function render_top_suggestions(suggestions, user_votes, div, suggestion_type, update_type) {
+	
+	if(suggestions.length == 0 && pathArray[1] != 'displays') {
+		empty_message = $('<div>').addClass('empty_message').html('Heckt an der Flüster-Theke gemeinsam aus, was der Barvatar sprechen und machen soll. Die Ansagen mit den meisten Prosts hört der Barvatar!');
+		div.html('');
+		div.append(empty_message);
+		return;
+	}
+	
+	var list = '<ul>';
+	var myIndex = 0;
+	
+	$.each(suggestions, function(index, suggestion) {
+		user_vote = user_voted_on(user_votes[suggestion.id], $.cookie('user_hash'));
+		var item = '';
+
+		//var seconds = new Date().getTime() / 1000;
+		var date = new Date();
+		//var milliseconds = date.getTime();
+		//var seconds = Math.floor(milliseconds / 1000);		
+		var seconds = server_time;
+		var time_dif = seconds - suggestion.vote_time; // how old is the suggestion in seconds
+		var time_left = 59 - time_dif;
+		var minutes_left = Math.floor(time_left / 60);
+		var seconds_left = time_left % 60;
+		
+		//console.log(suggestion.content + ' ' + time_left);
+		
+		if(time_dif > 59) {
+			retireSuggestion(suggestion.id);
+			time_left = 0;
+			minutes_left = 0;
+			seconds_left = 0;
+			//return true;
+		}
+		
+		if(myIndex == 0) {
+			item += '<span class="suggestion_content">' + (myIndex + 1) + '. <span class="magenta">"' + suggestion.content + '" </span></span><br/>';
+		} else {
+			item += '<span class="suggestion_content">' + (myIndex + 1) + '. "' + suggestion.content + '" </span><br/>';
+		}
+		
+		time_string = minutes_left + ':' + pad(seconds_left);
+		if(minutes_left == 0 && seconds_left <= 5) {
+			time_string = '<span class="magenta">' + time_string + '</span>';
+		}
+		
+		item += '<span class="suggestion_details">Prosts: ' + suggestion.score + ', noch ' + time_string + '</span><br/>';
+		
+		if(pathArray[1] != 'displays') {
+			item += '<div class="suggestion_controls">'
+			if(pathArray[1] != 'avatar') {
+				if(index == 0) {
+						pro_text = 'Sag\'s nochmal';
+						pro_button = '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&top_boost=1&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" /> '; 
+						if(user_vote) {
+							if(user_vote.vote == 0) {
+								item += pro_button;
+							}
+						} else {
+							if(!user_vote) {
+								item += pro_button;
+							}
+						}
+						if(!(minutes_left == 0 && seconds_left <= 5)) {
+							contra_text = 'Kipp weg';
+							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&abort=1&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />'; 
+						}
+				} else {
+						pro_text = 'Prost';
+						contra_text = 'Gähn';
+	
+						if(user_vote) {
+							// user has already voted on this suggestion
+							if(user_vote.vote == 1) {
+								// user voted up, can now only vote down
+								item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
+							} else if(user_vote.vote == 0) {
+								// user is neutral, can vote both ways
+								item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" /> ';
+								item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';		
+							} else if(user_vote.vote == -1) {
+								// user voted down, can now only vote up
+								item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />';
+							}
+						} else {
+							// first vote on this suggestion - user can vote both ways
+							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" /> ';
+							item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
+						}				
+				}
+			// moderator
+			} else {
+				item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/accept?avatar_id=' + avatar_id + '" class="ajax" value="accept" /> ';
+				item += '<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
+			}
+			item += '</div>';
+			
+		}
+	
+		// read aloud new top suggestions
+		if(index == 0) {
+			// if suggestion just arrived at top - or got a boost in votes
+			if(suggestion.id != top_suggestion_id || (suggestion.id == top_suggestion_id && suggestion.score > top_suggestion_score)) {
+				var speech_output = suggestion.name + ' sagt: ' + suggestion.content;
+				if(suggestion.id == top_suggestion_id && suggestion.score > top_suggestion_score) {
+						speech_output = suggestion.name2 + ' sagt: ' + suggestion.content;
+				}
+				read_with_queue(speech_output);
+			}
+			top_suggestion_id = suggestion.id;
+			top_suggestion_score = suggestion.score;
+		}
+				
+		list += '<li>' + item + '</li>';
+		myIndex++;
+	});
+
+	list += '</ul>';
+
+	if(animate_suggestions_update) {
+		div.fadeOut("fast", function() {
+			div.html(list);
+			div.slideDown("fast", updateAjaxLinks);
+			animate_suggestions_update = false;
+		});
+	}	else {
+		div.html(list);
+	}
+}
+
+function render_suggestions(data, update_type) {
+		render_new_suggestions(data.suggestions_new, data.user_votes_new, $('#suggestions_new'), 'new', update_type);
+		render_top_suggestions(data.suggestions_top, data.user_votes_top, $('#suggestions_top'), 'top', update_type);
+		updateAjaxLinks();
+}
+
+function updateSuggestions() {
+		$.getJSON(baseURL + 'suggestions/list?avatar_id=' + avatar_id, function(data) {
+			server_time = data.now;
+			current_suggestions = data;
+			console.log('update suggestion cache');
+			render_suggestions(data, 'poll');
+		});
+}
+
+function updateVotingTimers() {
+	server_time = server_time + 1;
+	//console.log(server_time);
+	if(!current_suggestions) {
+		updateSuggestions();
+	} else {
+		render_suggestions(current_suggestions, 'timer');
+	}
+}
+
+function submitName(name) {
+	$.ajax({
+		type: "POST",
+	  url: baseURL + "suggestions/update_user_name",
+   	data: "name=" + name,
+   	success: function(msg){
+			$('#name_container').slideUp(function() { 	   	
+				$('#comma').html(', ');
+				$('#display_user_name').html(name); 
+			});
+   		console.log(msg);
+   	},
+   	error: function(XMLHttpRequest, textStatus, errorThrown) {
+   		console.log(errorThrown);
+   	}
+ 	});
+}
+
+function submitSuggestion(content, name) {
+	//current_suggestions = null;
+	$.ajax({
+		type: "POST",
+	  url: baseURL + "suggestions/submit",
+   	data: "content=" + content + "&name=" + name + "&avatar_id=" + avatar_id,
+   	success: function(msg){
+   		//console.log(msg);
+			if(msg == 'blacklisted') {
+   			$('#suggestion_message').html('Du wurdest gesperrt.');
+   		} else {
+   			$('#suggestion_message').html('');
+   		}
+   	},
+   	error: function(XMLHttpRequest, textStatus, errorThrown) {
+   		console.log(errorThrown);
+   	}
+ 	});
+}
+
+function render_global_highscores(data) {
+	var list = '<ul>';
+	$.each(data.global_highscores, function(index, entry) {			
+		list += '<li>';
+		list += (index + 1) + '. "' + entry.content + '" <span class="highscore_details">' + entry.name + ', Prosts: ' + entry.score + '</span>';
+		list += '</li>';
+	});		
+	list += '</ul>';
+	$('#global_highscores').html(list);
+}
+function updateGlobalHighscores() {
+	$.getJSON(baseURL + 'suggestions/global_highscores', render_global_highscores);
+}
+
+function render_highscores(data) {
+	var list = '<ul>';
+	$.each(data.highscores, function(index, entry) {
+		list += '<li>';
+		list += (index + 1) + '. ' + entry.user_name + ' <span class="highscore_details">Prosts: ' + entry.score + '</span>';
+		list += '</li>';
+	});		
+	list += '</ul>';
+	$('#highscores').html(list);
+}
+function updateHighscores() {
+	$.getJSON(baseURL + 'suggestions/highscores?avatar_id=' + avatar_id, render_highscores);
+}
+
+function render_blacklist(data) {
+	var list = '<ul>';
+	$.each(data.blacklist, function(index, entry) {
+		list += '<li>';
+		list += entry.ip_address + ' (' + entry.user_name + ')';
+		list += '&nbsp;<a href="admin/unblock?ip=' + entry.ip_address + '&name=' + entry.user_name + '" class="ajax">unblock</a>';
+		list += '</li>';
+	});		
+	list += '</ul>';
+	$('#blacklist').html(list);
+	updateAjaxLinks();
+}
+function updateBlacklist() {
+	$.getJSON(baseURL + 'admin/blacklist', render_blacklist);
+}
+
+var pusher = new Pusher('<%= Pusher.key %>', {cluster: 'eu'});
+var channel = pusher.subscribe('avatar_chat2');
+
+channel.bind('update_suggestions_' + avatar_id, function(data) {
+		console.log(data);
+		//check if order changed
+		server_time = data.now;
+		if(suggestions_order_changed(data)) {
+			animate_suggestions_update = true;
+		}
+		current_suggestions = data;
+		render_suggestions(data, 'push');
+});
+channel.bind('read_message', function(data) {
+ 		readme(data.message);
+});
+channel.bind('update_blacklist', function(data) {
+		render_blacklist(data);		
+});
+channel.bind('update_highscores', function(data) {
+		render_highscores(data);
+});
+
+$(document).ready(function() {
+
+	/*
+	$('#sound_on').change(function(e) {
+		if($(this).is(':checked')) {
+			sound_on = true;
+		} else {
+			sound_on = false;
+		}
+	});
+	*/
+
+	$('.entry_link').click(function(e) {
+		if($('#display_user_name').html() == '') {
+			$('#name_message').html('Gib erst einen Namen ein!');
+			e.preventDefault();
+		}
+	});
+
+	$('#chat_name').keydown(function(e) {
+		if($(this).val().length >= 10) {
+			$('#name_message').html('Bitte maximal 10 Zeichen!');
+		} else {
+			$('#name_message').html('');
+		}
+	});
+
+	$('#suggestion_input').keydown(function(e) {
+		if($(this).val().length >= 79) {
+			$('#suggestion_message').html('Bitte maximal 80 Zeichen!');
+		} else {
+			$('#suggestion_message').html('');
+		}
+	});
+
+	$('#suggestion_input_form').submit(function(e) {
+			e.preventDefault();
+			if($('#suggestion_input').val().length > 0) {
+				submitSuggestion($('#suggestion_input').val(), $('#chat_name').val());
+			}
+      $('#suggestion_input').val('');
+	});
+	
+	$('#name_input_form').submit(function(e) {
+			e.preventDefault();
+			if($('#chat_name').val().length > 0) {
+				submitName($('#chat_name').val());
+			}
+	});
+			
+	updateSuggestions();	
+	
+	if(pathArray[1] == 'terminal') {
+		setInterval(updateVotingTimers, 5000);
+	} else {
+		setInterval(updateVotingTimers, 1000);
+	}
+
+	updateHighscores();
+	
+	if($('#global_highscores')) {
+		updateGlobalHighscores();
+	}
+	
+	if(urlParams['moderate']) {
+		updateBlacklist();
+	}
+});

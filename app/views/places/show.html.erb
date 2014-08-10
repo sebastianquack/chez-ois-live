@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @place.name %>
+</p>
+
+		<% if params[:local_embed] %>
+			<%= @place.fix_stream_embed_local.html_safe if @place.fix_stream_embed_local %>
+		<% else %>
+			<%= @place.fix_stream_embed.html_safe if @place.fix_stream_embed %>
+		<% end %>
+
+<%= link_to 'Edit', edit_place_path(@place) %> |
+<%= link_to 'Back', places_path %>

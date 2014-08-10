@@ -1,0 +1,402 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ */
+
+* {
+margin:0;
+padding:0;
+}
+
+body {
+	font-family: 'Roboto Slab', serif;
+  font-size: 16px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.wood {
+	background-image: url(https://s3-eu-west-1.amazonaws.com/chezicke/images/body_bg02.jpg);
+  z-index: -999;
+  min-height: 100%;
+  min-width: 1024px;
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+span.magenta {
+	color: #f80060;
+}
+
+a {
+	color: #aaa;
+}
+
+p, ul, ol { 
+	font-size: 1em;
+	line-height: 1.2em;
+}	
+
+ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul li {
+	padding-bottom: 0.2em;
+}
+
+h2 a, h3 a {
+	font-weight: normal;
+	color: #aaa;
+	font-size: 0.8em;
+}
+
+h3 {
+	margin-top: 0;
+	margin-bottom: 0.5em;
+}	
+
+.invisible_container {
+	float: left;
+	width: 400px;
+	margin-right: 11px;
+}
+
+.container {
+	float: left;
+	border: 1px solid #eee;
+	margin: 10px 0px 0px 10px;
+	padding: 10px;
+	background-color: #fff;
+}
+
+/* landing page */
+
+#name_message {
+  color: #f80060;
+  font-size: 1.1em;
+  font-weight: bold; 
+  padding-top: 10px;
+  float: left;
+}
+
+#name_container {
+	float: left;
+}
+
+#chat_name {
+	font-size: 1em;
+	width: 14em;
+}
+
+.fix_embed_container {
+	position:relative;
+	float:left;
+	padding-bottom: 10px;
+}
+
+.fix_embed_container a {
+	font-weight: bold;
+  color: #f80060;
+  text-decoration: none;  
+}
+
+.global_highscores_container {
+	float: left;
+	padding-top: 1em;
+	margin-bottom: 10px;
+}
+
+#global_highscores {
+	font-size: 0.9em;
+}
+
+/* play page */
+
+#welcome_container {
+	width: 380px;
+}
+
+#welcome_container p {
+	font-size: 0.9em;
+}
+
+#chat_container {
+	position: relative;
+	padding-right: 10px;
+	height: 300px;
+	width: 380px;
+}
+
+#suggestions_new {
+	height: 300px;
+	overflow: hidden;
+}
+
+#suggestions_new table {
+	position:absolute;
+	bottom: 55px;
+}
+
+.chat_details {
+	font-size: 0.9em;
+	width: 100px;
+	color: #aaa;
+	vertical-align: top;
+	word-break: break-all;
+}
+
+.chat_content {
+	font-size: 0.9em;
+	width: 230px;
+	vertical-align: top;
+	height: 1.5em;
+	word-break: break-all;
+}
+
+.chat_status {
+	width: 100px;
+	vertical-align: top;
+	text-align: right;
+	font-size: 0.9em;
+	color: #aaa;
+}
+
+#suggestion_input_form {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+}
+
+span.suggestion_label {
+	font-size: 0.9em;
+	position: absolute;
+	bottom: 12px;
+	left: 12px;
+	color: #aaa;
+	width: 100px;
+	word-break: break-all;
+}
+
+#suggestion_input {
+	position: absolute;
+	bottom: 10px;
+	left: 90px;
+	font-size: 0.9em;
+	width: 180px;
+}
+
+#suggestion_submit {
+	position: absolute;
+	bottom: 11px;
+	left: 328px;
+}
+
+#suggestion_message {
+	font-size: 0.8em;
+	color: #aaa;
+	position: absolute;
+	bottom: 36px;
+	left: 88px;
+}
+
+.chat_status a {
+	color: #aaa;
+}
+
+#avatar_container {
+	float: left;
+	width: 240px;
+	min-height: 300px;
+}
+
+#suggestions_top {
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+#suggestions_top ul li {
+	padding-bottom: 0.5em;
+}
+
+#suggestions_top ul li:first-child {
+/*	padding-bottom: 1em;*/
+}
+
+#suggestions_top ul li:first-child span.suggestion_content span.magenta {
+	/*font-size: 1.2em;*/
+	font-weight: bold;
+}
+
+.suggestion_details {
+	font-size: 0.9em;
+	color: #aaa;
+}
+
+.suggestion_content {
+	word-break: break-all;
+}
+
+.suggestion_controls input[type="button"] {
+	padding-bottom: 10px;
+}
+
+.suggestion_controls a {
+	color: #aaa;
+	font-size: 0.9em;
+}
+
+.empty_message {
+	color: #aaa;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	margin-top: 70px;
+	font-size: 0.9em;
+}
+
+#highscore_container {
+	width: 174px;
+	font-size: 0.9em;
+	margin-bottom: 10px;
+}
+
+.fix_embed_container {
+	float: left;
+	padding-right: 1em;
+}
+
+.entry_link {
+	clear: both;
+	float: left;
+	padding-top: 0.5em;	
+}
+
+.fix_embed, #pov_embed {
+	width: 380px;
+	height: 270px;
+	background-color: #eee;
+}
+
+#sdn {
+	width: 380px;
+	height: 240px;
+}
+
+
+#sdns {
+	width: 380px;
+	height: 30px;
+}
+
+.highscore_details {
+	color: #aaa;
+	font-size: 0.9em;
+}
+
+/* mobile devices */
+@media only screen and (max-width: 640px) {
+
+.invisible_container {
+	width: auto;
+}
+
+#welcome_container {
+	width: auto;
+}
+
+#chat_container {
+	width: auto;
+	height: auto;
+}
+
+#suggestions_new {
+	height: auto;
+}
+
+#suggestions_new table {
+	position: relative;
+	bottom: auto;
+}
+
+.chat_details {
+	width: auto;
+	min-width: 60px;
+	font-size: 0.8em;
+}
+
+.chat_content {
+	width: auto;
+	min-width: 80px;
+}
+
+.chat_status {
+	width: auto;
+}
+
+#suggestion_input_form {
+	position: relative;
+	bottom: auto;
+	margin-top: 20px;
+}
+
+span.suggestion_label {
+	display: none;
+	position: relative;
+	float: left;
+	font-size: 0.8em;
+	word-break: break-all;
+
+}
+
+#suggestion_input {
+	position: relative;
+	float: left;
+	width: auto;
+	left: auto;
+}
+
+#suggestion_submit {
+	position: relative;
+	left: auto;
+	bottom: auto;
+	float: left;
+}
+
+#suggestion_message {
+	position: relative;
+	float: left;
+}
+
+.stream_container {
+	display: none;
+}
+
+#fix_embed, #pov_embed {
+	display: none;
+}
+
+#avatar_container {
+	width: auto;
+}
+
+.empty_message {
+	width: auto;
+}
+
+}
+
+

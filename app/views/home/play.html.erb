@@ -1,0 +1,72 @@
+<div class="wood"></div>
+
+<div class="invisible_container">
+
+<% unless params[:view] == 'terminal' %>
+
+<div id="welcome_container" class="container">
+	<h3>Hallo, <span class="magenta"><%= @user_name %></span>! Du steuerst <%= @avatar.name %>, den Barvatar in <%= @avatar.place.name %>.</h3>
+	<p style="color:#aaa;	font-size: 0.9em;">Der Barvatar ist ein echter Mensch und trägt einen Hut mit Kamera und Mikrophon. Du siehst, was der Barvatar sieht, und hörst, was der Barvatar hört.</p><br/>
+	<p><a href="/">Barvatar wechseln oder Chat-Namen ändern</a></p>
+</div>
+
+<% end %>
+
+<div id="chat_container" class="container">
+	
+	<h3>Flüstern an der Theke</h3>
+	<div id="suggestions_new"></div>	
+	<% unless params[:view] == 'projection' %>
+	<form id="suggestion_input_form">
+		<span class="suggestion_label"><%= @user_name %></span>
+		<input id="suggestion_input" type="text" maxlength="79"/>
+		<input id="suggestion_submit" type="submit" value="Flüstern"/>
+		<input id="chat_name" type="hidden" size="10" value="<%= @user_name %>"/>
+	</form>
+	<!--<input id="sound_on" type="checkbox" value="sound_on"/>Sound on-->
+	<div id="suggestion_message"></div>	
+	<% end %>
+
+</div>
+
+</div>
+
+<div class="invisible_container">
+	<% unless params[:view] == 'terminal' %>
+		<div class="container stream_container">
+			<div id="pov_embed">
+			
+					<% if params[:local_embed] %>
+						<%= @avatar.pov_stream_embed_local.html_safe if @avatar.pov_stream_embed_local %>
+					<% else %>
+						<%= @avatar.pov_stream_embed.html_safe if @avatar.pov_stream_embed %>
+					<% end %>
+	
+			</div>
+
+		</div>
+	<% end %>
+	<div id="avatar_container" class="container">
+	<h3>Ansagen für den Barvatar</h3>
+	<div id="suggestions_top"></div>
+</div>
+</div>
+
+<% unless params[:view] == 'terminal' %>
+
+<div id="highscore_container" class="container">
+
+	<h3>Lokalrunde</h3>
+	<div id="highscores"></div>
+	<% if params[:moderate] %>	
+		<br/>
+		<a href="suggestions/clear_highscores?avatar_id=<%= params[:avatar_id] %>" class="ajax confirm">Clear highscores for this Avatar</a>
+		<br/><br/>
+		<h3>IP Blacklist</h3>
+		<div id="blacklist"></div>
+	<% end %>
+
+	
+</div>
+
+<% end %>
