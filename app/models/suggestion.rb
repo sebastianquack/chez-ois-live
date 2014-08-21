@@ -1,6 +1,7 @@
 class Suggestion < ActiveRecord::Base
   attr_accessible :content, :avatar_id, :ip_address, :name, :name2, :user_hash, :score, :status, :time_string, :voting_started_at
   has_many :user_votes
+  belongs_to :avatar
   
   def as_json(options={}) 
   	{
