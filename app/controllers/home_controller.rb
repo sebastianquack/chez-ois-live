@@ -42,4 +42,27 @@ class HomeController < ApplicationController
 
 		render :template => 'home/terminal', :layout => 'terminal'
 	end
+  
+  
+  # iframe views
+
+  def chat
+		@user_name = params[:user_name]
+		@user_name = "Stammgast" if @user_name.nil?
+
+		params[:avatar_id] = 1 if params[:avatar_id].nil?
+		@avatar = Avatar.find_by_id(params[:avatar_id])
+  end
+
+  def pov
+		params[:avatar_id] = 1 if params[:avatar_id].nil?
+		@avatar = Avatar.find_by_id(params[:avatar_id])
+  end
+
+  def highscores
+		params[:avatar_id] = 1 if params[:avatar_id].nil?
+		@avatar = Avatar.find_by_id(params[:avatar_id])
+  end
+  
+  
 end

@@ -124,7 +124,10 @@ $(document).ready(function() {
   // get things going
 	updateSuggestions();	
 	setInterval(updateTimers, 1000);
-	updateHighscores();
+
+  if($('#highscores')) {
+    updateHighscores();
+  }
 	
   if($('#global_highscores')) {
 		updateGlobalHighscores();

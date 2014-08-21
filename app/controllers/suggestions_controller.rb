@@ -311,10 +311,11 @@ class SuggestionsController < ApplicationController
 			unless params[:avatar_id] 
 				return {} 
 			end
-			highscores = UserScore.where({
-				:avatar_id => params[:avatar_id]
-			}).order("score DESC").limit(10)
-			return { :highscores => highscores }
+			#highscores = UserScore.where({
+			#	:avatar_id => params[:avatar_id]
+			#}).order("score DESC").limit(10)
+			highscores = UserScore.order("score DESC").limit(10)			
+      return { :highscores => highscores }
   end
 	def highscores
 		# see also as_json overrides in the models

@@ -1,0 +1,15 @@
+<div id="avatar_container" class="iframe_container">
+    <div id="suggestion_transmit"></div>
+    <div id="suggestions_top"></div>
+</div>
+	
+<form id="suggestion_input_form" class="iframe_container">
+	  <h3>Hallo, <span class="magenta"><%= @user_name %></span>! Hier steuerst du <%= @avatar.name %> in <%= @avatar.place.name %>. Sag an, was er/sie tun soll!</h3>
+
+
+	  <!--span class="suggestion_label"><%= @user_name %></span-->
+    <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>
+    <input id="suggestion_submit" type="submit" value="Ansagen"/>
+    <input id="chat_name" type="hidden" size="10" value="<%= @user_name %>"/>
+    <div id="suggestion_message"></div>
+</form>

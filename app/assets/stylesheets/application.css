@@ -120,10 +120,6 @@ h3 {
 	margin-bottom: 10px;
 }
 
-#global_highscores {
-	font-size: 0.9em;
-}
-
 /* play page */
 
 #welcome_container {
@@ -391,6 +387,29 @@ span.suggestion_label {
 	width: auto;
 }
 
+}
+
+/* setup for iframe embedding */
+
+.iframe_container {
+	width: 100% !important;
+	padding: 10px;
+}
+
+.iframe_container div, .iframe_container p, .iframe_container h3 {
+	width: 100% !important;
+}
+
+#suggestion_input {
+	width: 50%;
+	bottom: auto;
+}
+
+#suggestion_submit {
+	margin-left: 10px;
+	bottom: 2px;
+	float: none;
+	position: relative;
 }
 
 
