@@ -412,4 +412,28 @@ span.suggestion_label {
 	position: relative;
 }
 
+#moderator_header {
+	position: fixed;
+	width: 100%;
+	top: 0px;
+	padding: 20px;
+	background-color: #eee;
+	border-bottom: 1px solid #444;
+}
 
+#moderator_header form {
+	margin-bottom: 20px;
+}
+
+#moderator_notice_area {
+
+}
+
+#moderator_play_area {
+	margin-top: 120px;
+}
+
+iframe {
+	border:none;
+	overflow:hidden;
+}
