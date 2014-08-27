@@ -31,7 +31,7 @@ class AdminController < ApplicationController
 				)
 		end
 		blocked_ip.save
-		Pusher['avatar_chat2'].trigger('update_blacklist', load_blacklist)
+		Pusher['chez_ois_chat'].trigger('update_blacklist', load_blacklist)
 		render json: blocked_ip
 	end
 
@@ -39,7 +39,7 @@ class AdminController < ApplicationController
 		blocked_ip = IpBlacklist.find_by_ip_address(params[:ip])
 		blocked_ip.status = 1
 		blocked_ip.save
-		Pusher['avatar_chat2'].trigger('update_blacklist', load_blacklist)
+		Pusher['chez_ois_chat'].trigger('update_blacklist', load_blacklist)
 		render json: blocked_ip
 	end
 

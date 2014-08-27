@@ -138,12 +138,11 @@ $(document).ready(function() {
 
   if($('#highscores')) {
     updateHighscores();
-  }
-	
+  }	
   if($('#global_highscores')) {
 		updateGlobalHighscores();
 	}
-	if(urlParams['moderate']) {
+	if($('#blacklist')) {
 		updateBlacklist();
 	}
 });
@@ -249,13 +248,13 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
 						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
 					}				
-			
-      // moderator
-      } else {
-        if(index > 0) {
-          item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
-        }
-      }			
+      }
+    }
+
+    // moderator options			
+    if(urlParams['moderate']) {
+      item += '&nbsp;<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
+      item += '&nbsp;<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion.ip + '&name=' + suggestion.name + '">';
 		}
 	 				
 		list += '<li>' + item + '</li>';
@@ -280,6 +279,12 @@ function render_transmit_suggestion(suggestion_transmit_data) {
   if(suggestion_transmit_data) {
 	  var item = '<span class="suggestion_content">' + suggestion_transmit_data.name + ': <span class="magenta">"' + suggestion_transmit_data.content + '" </span></span><br/>';
     item += '<span class="suggestion_details">wird übertragen...</span><br/>';
+    // moderator options			
+    if(urlParams['moderate']) {
+      item += '&nbsp;<input type="button" class="ajax" href="suggestions/' + suggestion_transmit_data.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
+      item += '&nbsp;<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion_transmit_data.ip + '&name=' + suggestion_transmit_data.name + '">';
+		}
+
     $('#suggestion_transmit').html(item)
     transmit_suggestion = suggestion_transmit_data
     console.log('set transmit_suggestion to' + transmit_suggestion.content)
