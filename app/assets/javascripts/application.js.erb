@@ -253,8 +253,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 
     // moderator options			
     if(urlParams['moderate']) {
-      item += '&nbsp;<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
-      item += '&nbsp;<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion.ip + '&name=' + suggestion.name + '">';
+      item += render_moderator_buttons(suggestion)
 		}
 	 				
 		list += '<li>' + item + '</li>';
@@ -281,8 +280,7 @@ function render_transmit_suggestion(suggestion_transmit_data) {
     item += '<span class="suggestion_details">wird übertragen...</span><br/>';
     // moderator options			
     if(urlParams['moderate']) {
-      item += '&nbsp;<input type="button" class="ajax" href="suggestions/' + suggestion_transmit_data.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
-      item += '&nbsp;<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion_transmit_data.ip + '&name=' + suggestion_transmit_data.name + '">';
+      item += render_moderator_buttons(suggestion_transmit_data)
 		}
 
     $('#suggestion_transmit').html(item)
@@ -294,6 +292,16 @@ function render_transmit_suggestion(suggestion_transmit_data) {
     //console.log('set transmit_suggestion to null')
   }
 }
+
+// add moderation buttons
+function render_moderator_buttons(suggestion) {
+  item = '&nbsp;<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
+  item += '&nbsp;<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion.ip + '&name=' + suggestion.name + '">';
+  item += '&nbsp;<input type="button"/ value="boost" class="ajax" href="admin/boost?ip=' + suggestion.ip + '&name=' + suggestion.name + '">'; 
+  return item
+}
+
+
 
 // update the timers
 function updateTimers() {
@@ -327,8 +335,10 @@ function submitSuggestion(content, name) {
    		//console.log(msg);
 			if(msg == 'blacklisted') {
    			$('#suggestion_message').html('Du wurdest gesperrt.');
+   		} else if(msg == 'boost') {
+   			$('#suggestion_message').html('Du bist auf der Überholspur!');
    		} else {
-   			$('#suggestion_message').html('');
+   		  $('#suggestion_message').html('');
    		}
    	},
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -478,8 +488,8 @@ function render_blacklist(data) {
 	var list = '<ul>';
 	$.each(data.blacklist, function(index, entry) {
 		list += '<li>';
-		list += entry.ip_address + ' (' + entry.user_name + ')';
-		list += '&nbsp;<a href="admin/unblock?ip=' + entry.ip_address + '&name=' + entry.user_name + '" class="ajax">unblock</a>';
+		list += entry.ip_address + ' (' + entry.user_name + ') status: ' + entry.status;
+		list += '&nbsp;<a href="admin/reset?ip=' + entry.ip_address + '&name=' + entry.user_name + '" class="ajax">reset</a>';
 		list += '</li>';
 	});		
 	list += '</ul>';

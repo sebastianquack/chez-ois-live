@@ -18,7 +18,7 @@ class SuggestionsController < ApplicationController
     @suggestions_top = Suggestion.where("status = 1 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => avatar_id, :limit => 1.minute.ago).order("score DESC, voting_started_at ASC").limit(4)
     
     # see if there is a suggestion in transmit that has been read
-    @suggestion_transmit = Suggestion.where("status = 3 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => avatar_id, :limit => 10.seconds.ago).order("voting_started_at ASC").first
+    @suggestion_transmit = Suggestion.where("status = 3 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => avatar_id, :limit => 10.seconds.ago).order("voting_started_at DESC").first
 
     # if there is only one suggestion - and none is currently being transmitted
     if @suggestions_top.length > 0 && @suggestion_transmit == nil
@@ -78,7 +78,9 @@ class SuggestionsController < ApplicationController
 			if blacklist_entry.status == 0
 				render json: :blacklisted
 				return
-			end
+      elsif blacklist_entry.status == 2
+        @boost = true
+      end
 		end
     
     # create a new suggestion
@@ -93,10 +95,23 @@ class SuggestionsController < ApplicationController
 				:status => 1, # go directly to voting
 				:ip_address => request.remote_ip
 		)        
+
+    if @boost # boost, go directly to transmit
+      # get current transmit suggestion and retire
+      suggestion_transmit = Suggestion.where("status = 3 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => params[:avatar_id], :limit => 10.seconds.ago).order("voting_started_at DESC").first
+      retire_suggestion(suggestion_transmit) if suggestion_transmit
+      @suggestion.status = 3
+      read_suggestion(@suggestion)
+		end
+
 		if @suggestion.save
       Pusher.trigger('chez_ois_chat', 'update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
       #Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-			render json: @suggestion
+      if @boost
+        render json: :boost
+      else
+			  render json: @suggestion
+      end
   	end
   end
 
@@ -152,17 +167,19 @@ class SuggestionsController < ApplicationController
 
   # STEP 3 - a suggestions time has run out
 
-	def retire
-		suggestion = Suggestion.find(params[:id])
-
+  def retire_suggestion(suggestion)
     if suggestion.status != 2
 		  logger.debug 'RETIRE'
 			suggestion.status = 2
       suggestion.save		
       Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
     end
-		
-		render json: suggestion	
+  end
+
+	def retire
+    suggestion = Suggestion.find(params[:id])
+    retire_suggestion(suggestion)
+    render json: suggestion	
 	end
 
   # VOTING a user votes on one of the suggestions

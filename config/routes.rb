@@ -25,7 +25,8 @@ AvatarChat::Application.routes.draw do
 
   match '/admin/blacklist' => 'admin#blacklist'
   match '/admin/block' => 'admin#block'
-  match '/admin/unblock' => 'admin#unblock'
+  match '/admin/boost' => 'admin#boost'
+  match '/admin/reset' => 'admin#reset'
   match '/admin/delete_suggestions' => 'admin#delete_suggestions'
   
   match '/displays/projection' => 'displays#projection'
