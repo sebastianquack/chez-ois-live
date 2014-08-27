@@ -64,5 +64,8 @@ class HomeController < ApplicationController
 		@avatar = Avatar.find_by_id(params[:avatar_id])
   end
   
+  def test   
+		render :template => 'home/test', :layout => 'plain'
+  end
   
 end
