@@ -67,4 +67,7 @@ class HomeController < ApplicationController
   def moderate   
   end
   
+  def test
+  end
+  
 end

@@ -224,8 +224,13 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 		
   	item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '&nbsp;(noch ' + time_string + ')</span>&nbsp;';
 		
-		if(pathArray[1] != 'displays') {
-      if(pathArray[1] != 'avatar') {
+    // moderator options			
+    if(urlParams['moderate']) {
+      item += render_moderator_buttons(suggestion)
+		} else {
+		    
+      if(pathArray[1] != 'displays') {
+        if(pathArray[1] != 'avatar') {
 				
 					pro_text = 'Prost';
 					contra_text = 'Contra';
@@ -247,14 +252,10 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 						// first vote on this suggestion - user can vote both ways
 						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
 						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
-					}				
+					}	
+        }			
       }
     }
-
-    // moderator options			
-    if(urlParams['moderate']) {
-      item += render_moderator_buttons(suggestion)
-		}
 	 				
 		list += '<li>' + item + '</li>';
 		myIndex++;

@@ -1,8 +1,4 @@
 <div id="moderator_header"> 
-  <form id="notice_input_form">
-      <input id="notice_input" type="text" size="79" maxlength="79" autocomplete="off"/>
-      <input id="notice_submit" type="submit" value="Anzeigen"/>
-  </form>
   <iframe scrolling="no" height="30" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/notice"></iframe>
 </div>
 
@@ -12,18 +8,15 @@
 <iframe scrolling="no" height="400" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/pov?avatar_id=1"></iframe>
 
 <h1>Chat Avatar 1</h1>
-<iframe scrolling="no" height="400" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=1&moderate=1"></iframe>
+<iframe scrolling="no" height="400" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=1"></iframe>
 
 <h1>POV Avatar 2</h1>
 <iframe scrolling="no" height="400" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/pov?avatar_id=2"></iframe>
 
 <h1>Chat Avatar 2</h1>
-<iframe scrolling="no" height="400" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=2&moderate=1"></iframe>
+<iframe scrolling="no" height="400" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=2"></iframe>
 
 <h1>Highscores</h1>
 <iframe scrolling="no" height="400" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/highscores"></iframe>
-
-<h1>Geblockt / Geboostet</h1>
-<div id="blacklist"></div>
 
 </div>

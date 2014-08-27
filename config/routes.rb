@@ -47,6 +47,8 @@ AvatarChat::Application.routes.draw do
   match '/notice' => 'chat_items#latest'
   match '/notice/submit' => 'chat_items#submit'
   
+  match '/test' => 'home#test'
+  
   root :to => 'home#landing'
 
 end
