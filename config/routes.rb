@@ -7,7 +7,8 @@ AvatarChat::Application.routes.draw do
   resources :avatars
 
 	match '/chat_items/submit' => 'chat_items#submit'
-	match '/chat_items/list' => 'chat_items#list'
+	match '/chat_items/latest' => 'chat_items#latest'
+
 	match '/suggestions/list' => 'suggestions#list'
 	match '/suggestions/submit' => 'suggestions#submit'
 
@@ -41,8 +42,10 @@ AvatarChat::Application.routes.draw do
   match '/pov' => 'home#pov'  
   match '/highscores' => 'home#highscores'  
 
-  match '/test' => 'home#test'
-	
+  match '/moderate' => 'home#moderate'
+  match '/notice' => 'chat_items#latest'
+  match '/notice/submit' => 'chat_items#submit'
+  
   root :to => 'home#landing'
 
 end

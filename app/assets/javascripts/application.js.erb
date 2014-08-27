@@ -73,6 +73,9 @@ channel.bind('read_suggestions', function(data) {
     console.log(data)
  		read_with_queue(data.content);
 });
+channel.bind('update_notice', function(data) {
+		$('#moderator-notice').html(data.content)
+});
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		
 });
@@ -106,6 +109,14 @@ $(document).ready(function() {
 		}
 	});
 
+	$('#notice_input_form').submit(function(e) {
+		e.preventDefault();
+		//if($('#notice_input').val().length > 0) {
+			submitNotice($('#notice_input').val())
+    //}
+    $('#notice_input').val('');
+	});
+
 	$('#suggestion_input_form').submit(function(e) {
 			e.preventDefault();
 			if($('#suggestion_input').val().length > 0) {
@@ -113,7 +124,7 @@ $(document).ready(function() {
 			}
       $('#suggestion_input').val('');
 	});
-	
+
 	$('#name_input_form').submit(function(e) {
 			e.preventDefault();
 			if($('#chat_name').val().length > 0) {
@@ -153,7 +164,7 @@ function updateSuggestions() {
 // render the suggestions list from the data
 function render_suggestions(data, update_type) {
 		//render_new_suggestions(data.suggestions_new, data.user_votes_new, $('#suggestions_new'), 'new', update_type);
-    console.log("render with type " + update_type)
+    //console.log("render with type " + update_type)
     if(update_type != 'timer') {
       render_transmit_suggestion(data.suggestion_transmit);
     }
@@ -408,6 +419,20 @@ function submitName(name) {
    	}
  	});
 }
+
+// moderator submits notice
+function submitNotice(content) {
+	//current_suggestions = null;
+	$.ajax({
+		type: "POST",
+	  url: baseURL + "notice/submit",
+   	data: "content=" + content,
+   	error: function(XMLHttpRequest, textStatus, errorThrown) {
+   		console.log(errorThrown);
+   	}
+ 	});
+}
+
 
 
 // HIGHSCORES
