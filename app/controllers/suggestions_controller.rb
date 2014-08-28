@@ -100,6 +100,7 @@ class SuggestionsController < ApplicationController
       # get current transmit suggestion and retire
       suggestion_transmit = Suggestion.where("status = 3 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => params[:avatar_id], :limit => 10.seconds.ago).order("voting_started_at DESC").first
       retire_suggestion(suggestion_transmit) if suggestion_transmit
+      @suggestion.name2 = "boost"
       @suggestion.status = 3
       read_suggestion(@suggestion)
 		end

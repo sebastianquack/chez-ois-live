@@ -215,8 +215,14 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 			return true;
 		}
         
-		item += '<span class="suggestion_content">' + suggestion.name + ': "' + suggestion.content + '"</span><br/>';
-		
+		item += '<span class="suggestion_content">' + suggestion.name
+
+    if(suggestion.name2 == "boost") {
+      item += " (Überholspur!)"
+    }
+
+    item += ': "' + suggestion.content + '"</span><br>'
+    
   	time_string = minutes_left + ':' + pad(seconds_left);
   	if(minutes_left == 0 && seconds_left <= 5) {
   		time_string = '<span class="magenta">' + time_string + '</span>';
@@ -277,7 +283,14 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 // render the suggestion in transmission
 function render_transmit_suggestion(suggestion_transmit_data) {
   if(suggestion_transmit_data) {
-	  var item = '<span class="suggestion_content">' + suggestion_transmit_data.name + ': <span class="magenta">"' + suggestion_transmit_data.content + '" </span></span><br/>';
+	  var item = '<span class="suggestion_content">' + suggestion_transmit_data.name
+
+    if(suggestion_transmit_data.name2 == "boost") {
+      item += " (Überholspur!)"
+    }
+
+    item += ': <span class="magenta">"' + suggestion_transmit_data.content + '"</span></span><br>'
+
     item += '<span class="suggestion_details">wird übertragen...</span><br/>';
     // moderator options			
     if(urlParams['moderate']) {
