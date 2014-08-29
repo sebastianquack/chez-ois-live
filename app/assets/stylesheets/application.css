@@ -170,10 +170,6 @@ h3 {
 	color: #aaa;
 }
 
-#suggestion_input_form {
-		width: 380px;
-}
-
 span.suggestion_label {
 	font-size: 0.9em;
 	color: #aaa;
@@ -203,8 +199,6 @@ span.suggestion_label {
 
 #avatar_container {
 	float: left;
-	width: 380px;
-	min-height: 300px;
 }
 
 #suggestion_transmit {
@@ -297,9 +291,6 @@ span.suggestion_label {
 	font-size: 0.9em;
 }
 
-/* mobile devices */
-@media only screen and (max-width: 640px) {
-
 .invisible_container {
 	width: auto;
 }
@@ -338,9 +329,9 @@ span.suggestion_label {
 }
 
 #suggestion_input_form {
-	position: relative;
-	bottom: auto;
-	margin-top: 20px;
+	position: absolute;
+	bottom: 0px;
+	padding-right: 5px;
 }
 
 span.suggestion_label {
@@ -387,18 +378,7 @@ span.suggestion_label {
 	width: auto;
 }
 
-}
-
 /* setup for iframe embedding */
-
-.iframe_container {
-	width: 100% !important;
-	padding: 10px;
-}
-
-.iframe_container div, .iframe_container p, .iframe_container h3 {
-	width: 100% !important;
-}
 
 #suggestion_input {
 	width: 50%;
@@ -426,7 +406,7 @@ span.suggestion_label {
 }
 
 #moderator_notice_area {
-
+	font-size: 150%;
 }
 
 #moderator_play_area {
@@ -436,4 +416,8 @@ span.suggestion_label {
 iframe {
 	border:none;
 	overflow:hidden;
+}
+
+.iframe_container {
+	padding-left: 5px;
 }

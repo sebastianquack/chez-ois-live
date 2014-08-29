@@ -23,10 +23,10 @@ AvatarChat::Application.routes.draw do
 	match '/suggestions/clear_highscores' => 'suggestions#clear_highscores'
 	match '/suggestions/update_user_name' => 'suggestions#update_user_name'
 
-  match '/admin/blacklist' => 'admin#blacklist'
-  match '/admin/block' => 'admin#block'
-  match '/admin/boost' => 'admin#boost'
-  match '/admin/reset' => 'admin#reset'
+  match '/admin/blacklist' => 'suggestions#blacklist'
+  match '/admin/block' => 'suggestions#block'
+  match '/admin/boost' => 'suggestions#boost'
+  match '/admin/reset' => 'suggestions#reset'
   match '/admin/delete_suggestions' => 'admin#delete_suggestions'
   
   match '/displays/projection' => 'displays#projection'

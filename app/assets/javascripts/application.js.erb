@@ -70,7 +70,7 @@ channel.bind('update_suggestions_' + avatar_id, function(data) {
 		render_suggestions(data, 'push');
 });
 channel.bind('read_suggestions', function(data) {
-    console.log(data)
+    //console.log(data)
  		read_with_queue(data.content);
 });
 channel.bind('update_notice', function(data) {
@@ -134,17 +134,13 @@ $(document).ready(function() {
 	
   // get things going
 	updateSuggestions();	
-	setInterval(updateTimers, 1000);
-
-  if($('#highscores')) {
-    updateHighscores();
-  }	
-  if($('#global_highscores')) {
-		updateGlobalHighscores();
-	}
+  updateHighscores();
 	if($('#blacklist')) {
 		updateBlacklist();
 	}
+
+	setInterval(updateTimers, 1000);
+
 });
 
 
@@ -155,7 +151,7 @@ function updateSuggestions() {
 		$.getJSON(baseURL + 'suggestions/list?avatar_id=' + avatar_id, function(data) {
 			server_time = data.now;
 			current_suggestions = data;
-			console.log('update suggestion cache');
+			//console.log('update suggestion cache');
 			render_suggestions(data, 'poll');
 		});
 }
@@ -194,18 +190,6 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 		var minutes_left = Math.floor(time_left / 60);
 		var seconds_left = time_left % 60;
 		
-    /* ideally this should be checked on the server after a suggestion is retired through the timer
-		// check if there is a new top suggestion, if yes, accept it
-    if(index == 0 && transmit_suggestion == null) { // if the suggestion is top and no other suggestion is in the way
-			if(suggestion.score >= 0) {
-        console.log("transmitting suggestion " + suggestion.content)
-        transmitSuggestion(suggestion.id)
-        transmit_suggestion = suggestion
-        return true
-			}
-		}
-    */
-    
     // retire old suggestions
 		if(time_dif > 59) {
 			retireSuggestion(suggestion.id);
@@ -284,14 +268,12 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 function render_transmit_suggestion(suggestion_transmit_data) {
   if(suggestion_transmit_data) {
 	  var item = '<span class="suggestion_content">' + suggestion_transmit_data.name
-
     if(suggestion_transmit_data.name2 == "boost") {
-      item += " (Überholspur!)"
+      item += " (Überholspur)"
     }
-
     item += ': <span class="magenta">"' + suggestion_transmit_data.content + '"</span></span><br>'
-
-    item += '<span class="suggestion_details">wird übertragen...</span><br/>';
+    item += '<span class="suggestion_details">wird übertragen...</span>';
+    
     // moderator options			
     if(urlParams['moderate']) {
       item += render_moderator_buttons(suggestion_transmit_data)
@@ -299,7 +281,7 @@ function render_transmit_suggestion(suggestion_transmit_data) {
 
     $('#suggestion_transmit').html(item)
     transmit_suggestion = suggestion_transmit_data
-    console.log('set transmit_suggestion to' + transmit_suggestion.content)
+    //console.log('set transmit_suggestion to' + transmit_suggestion.content)
   } else {
     $('#suggestion_transmit').html('')
     transmit_suggestion = null
@@ -310,12 +292,10 @@ function render_transmit_suggestion(suggestion_transmit_data) {
 // add moderation buttons
 function render_moderator_buttons(suggestion) {
   item = '&nbsp;<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
-  item += '&nbsp;<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion.ip + '&name=' + suggestion.name + '">';
-  item += '&nbsp;<input type="button"/ value="boost" class="ajax" href="admin/boost?ip=' + suggestion.ip + '&name=' + suggestion.name + '">'; 
+  item += '&nbsp;<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion.ip + '&name=' + suggestion.name + '&suggestion_id=' + suggestion.id + '&avatar_id=' + avatar_id + '">';
+  item += '&nbsp;<input type="button"/ value="boost" class="ajax" href="admin/boost?ip=' + suggestion.ip + '&name=' + suggestion.name + '&suggestion_id=' + suggestion.id + '&avatar_id=' + avatar_id + '">'; 
   return item
 }
-
-
 
 // update the timers
 function updateTimers() {
@@ -326,7 +306,7 @@ function updateTimers() {
 
 	} else { // suggestions are there
     if(transmit_suggestion) { // there's a suggestion in transmission
-      console.log(server_time - transmit_suggestion.vote_time)
+      //console.log(server_time - transmit_suggestion.vote_time)
       if(server_time - transmit_suggestion.vote_time > 10) { // check if is still has time
         console.log("retiring " + transmit_suggestion.content)
         retireSuggestion(transmit_suggestion.id)
@@ -466,33 +446,31 @@ function submitNotice(content) {
 
 // HIGHSCORES
 
-function render_global_highscores(data) {
+function render_highscores(data) {
+
+  // suggestion_highscores
 	var list = '<ul>';
-	$.each(data.global_highscores, function(index, entry) {			
+	$.each(data.suggestion_highscores, function(index, entry) {			
 		list += '<li>';
 		list += (index + 1) + '. "' + entry.content + '" <span class="highscore_details">' + entry.name + ', Prosts: ' + entry.score + '</span>';
 		list += '</li>';
 	});		
 	list += '</ul>';
-	$('#global_highscores').html(list);
-}
-function updateGlobalHighscores() {
-	$.getJSON(baseURL + 'suggestions/global_highscores', render_global_highscores);
-}
+	$('#suggestion_highscores').html(list);
 
-function render_highscores(data) {
 	var list = '<ul>';
-	$.each(data.highscores, function(index, entry) {
+	$.each(data.user_highscores, function(index, entry) {
 		list += '<li>';
 		list += (index + 1) + '. ' + entry.user_name + ' <span class="highscore_details">Prosts: ' + entry.score + '</span>';
 		list += '</li>';
 	});		
 	list += '</ul>';
-	$('#highscores').html(list);
+	$('#user_highscores').html(list);
+
 }
 
 function updateHighscores() {
-	$.getJSON(baseURL + 'suggestions/highscores?avatar_id=' + avatar_id, render_highscores);
+	$.getJSON(baseURL + 'suggestions/highscores', render_highscores);
 }
 
 

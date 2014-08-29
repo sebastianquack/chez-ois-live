@@ -1,19 +1,8 @@
 class SuggestionsController < ApplicationController
 
   # get the current list of suggestions
-
 	def load_suggestions(avatar_id)
 
-    # get the newest suggestions
-		#@suggestions_new = Suggestion.where("status != 4 AND avatar_id = :avatar_id AND created_at > :limit", {:avatar_id => avatar_id, :limit => Time.now - 10.minutes}).order("created_at DESC").limit(17)
-		#@suggestions_new.reverse!
-
-    # assemble hash of user votes
-    #@user_votes_new = Hash.new
-		#@suggestions_new.each do |suggestion| 
-		#	@user_votes_new[suggestion.id] = suggestion.user_votes
-		#end
-	
     # get the top sugestions
     @suggestions_top = Suggestion.where("status = 1 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => avatar_id, :limit => 1.minute.ago).order("score DESC, voting_started_at ASC").limit(4)
     
@@ -46,12 +35,9 @@ class SuggestionsController < ApplicationController
 
 		return {
         :suggestion_transmit => @suggestion_transmit,
-				#:suggestions_new => @suggestions_new,
-				#:user_votes_new => @user_votes_new,
 				:suggestions_top => @suggestions_top,
 				:user_votes_top => @user_votes_top,
 				:now => Time.now.to_i
-				#:suggestions_accepted => @suggestions_accepted
 			}	
 	end
 
@@ -97,12 +83,7 @@ class SuggestionsController < ApplicationController
 		)        
 
     if @boost # boost, go directly to transmit
-      # get current transmit suggestion and retire
-      suggestion_transmit = Suggestion.where("status = 3 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => params[:avatar_id], :limit => 10.seconds.ago).order("voting_started_at DESC").first
-      retire_suggestion(suggestion_transmit) if suggestion_transmit
-      @suggestion.name2 = "boost"
-      @suggestion.status = 3
-      read_suggestion(@suggestion)
+      boost_suggestion(@suggestion)
 		end
 
 		if @suggestion.save
@@ -172,14 +153,14 @@ class SuggestionsController < ApplicationController
     if suggestion.status != 2
 		  logger.debug 'RETIRE'
 			suggestion.status = 2
-      suggestion.save		
-      Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+      suggestion.save		  
     end
   end
 
 	def retire
     suggestion = Suggestion.find(params[:id])
     retire_suggestion(suggestion)
+    Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
     render json: suggestion	
 	end
 
@@ -247,33 +228,6 @@ class SuggestionsController < ApplicationController
 		render json: suggestion
 	end
     
-  # the admin removes a suggestion
-
-	def decline
-		@suggestion = Suggestion.find(params[:id])
-		@suggestion.status = 4	
-		@suggestion.save
-
-		user_reward(@suggestion, -5)
-
-		Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-		#Pusher['chez_ois_chat'].trigger('read_message', { :message => "Vorschlag abgelehnt: " + @suggestion.content })
-		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
-
-		render json: @suggestion
-	end
-
-  # deprecared - voting starts immediately
-	#def start_vote
-	#	suggestion = Suggestion.find(params[:id])
-	#	suggestion.status = 1
-	#	suggestion.voting_started_at = Time.now.to_i
-	#	suggestion.save
-	#	Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-	#	render json: suggestion
-	#end
-
-
   # USER OPERATIONS
 
 	def update_user_name 
@@ -317,33 +271,100 @@ class SuggestionsController < ApplicationController
 
   # HIGHSCORES
 
-	def load_global_highscores
-			global_highscores = Suggestion.order("score DESC").limit(10)
-			return { :global_highscores => global_highscores }
-	end
-	def global_highscores
-			render json: load_global_highscores
-	end
-
 	def load_highscores 	
-			unless params[:avatar_id] 
-				return {} 
-			end
-			#highscores = UserScore.where({
-			#	:avatar_id => params[:avatar_id]
-			#}).order("score DESC").limit(10)
-			highscores = UserScore.order("score DESC").limit(10)			
-      return { :highscores => highscores }
+			user_highscores = UserScore.order("score DESC").limit(10)			
+      suggestion_highscores = Suggestion.where("score > 0").order("score DESC, created_at ASC").limit(10)
+      return { :user_highscores => user_highscores, :suggestion_highscores => suggestion_highscores }
   end
 	def highscores
 		# see also as_json overrides in the models
 		render json: load_highscores
 	end
-	
+	  
+  # ADMIN Operations
+  
+  # the admin removes a suggestion
+  def decline_suggestion suggestion 
+		suggestion.status = 4	
+		suggestion.save
+		user_reward(suggestion, -5)
+  end
+
+	def decline
+		@suggestion = Suggestion.find(params[:id])
+    decline_suggestion @suggestion
+		Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)    
+		render json: @suggestion
+	end
+    
+	def load_blacklist
+		@blocked_ip_adresses = IpBlacklist.where("status != 1").order('status DESC')
+    return {:blacklist => @blocked_ip_adresses }	
+	end
+
+	def blacklist
+		render json: load_blacklist
+	end
+
+  def set_blacklist_status ip, name, status
+		blocked_ip = IpBlacklist.find_by_ip_address(ip)
+		if blocked_ip 
+			blocked_ip.status = status
+			blocked_ip.user_name = name
+		else
+			blocked_ip = IpBlacklist.new(
+				:ip_address => ip,
+				:user_name => name,
+				:status => status
+				)
+		end
+		blocked_ip.save
+		Pusher['chez_ois_chat'].trigger('update_blacklist', load_blacklist)
+    return blocked_ip
+	end
+
+	def block
+    set_blacklist_status(params[:ip], params[:name], 0)
+    suggestions = Suggestion.where(:ip_address => params[:ip]).update_all status: 4
+    Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)    
+
+    render json: :ok
+  end
+
+  def boost_suggestion suggestion
+    # get current transmit suggestion and retire
+    suggestion_transmit = Suggestion.where("status = 3 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => params[:avatar_id], :limit => 10.seconds.ago).order("voting_started_at DESC").first
+    retire_suggestion(suggestion_transmit) if suggestion_transmit
+    suggestion.name2 = "boost"
+    suggestion.status = 3
+    read_suggestion(suggestion)
+  end
+
+	def boost
+    set_blacklist_status(params[:ip], params[:name], 2)
+    suggestion = Suggestion.find(params[:suggestion_id])
+    boost_suggestion suggestion
+    Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+    render json: :ok
+  end
+  
+	def reset
+		blocked_ip = IpBlacklist.find_by_ip_address(params[:ip])
+		blocked_ip.status = 1
+		blocked_ip.save
+		Pusher['chez_ois_chat'].trigger('update_blacklist', load_blacklist)
+		render json: blocked_ip
+	end
+  
 	def clear_highscores
-		UserScore.destroy_all(:avatar_id => params[:avatar_id])
+    UserScore.destroy_all
+    Suggestion.update_all score: 0
+    
 		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
 		render json: load_highscores
 	end
+  
 
 end
