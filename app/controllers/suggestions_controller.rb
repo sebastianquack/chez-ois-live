@@ -68,7 +68,7 @@ class SuggestionsController < ApplicationController
         @boost = true
       end
 		end
-    
+        
     # create a new suggestion
 		@suggestion = Suggestion.new(
 				:time_string => Time.now.to_i,
@@ -81,6 +81,10 @@ class SuggestionsController < ApplicationController
 				:status => 1, # go directly to voting
 				:ip_address => request.remote_ip
 		)        
+
+    if params[:name] == ""
+      @suggestion.name = "Gast"
+    end
 
     if @boost # boost, go directly to transmit
       boost_suggestion(@suggestion)
