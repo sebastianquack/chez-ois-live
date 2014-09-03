@@ -66,18 +66,21 @@ ul li {
 
 h1 {
 	color: #fff;
+	font-weight: normal;
 }
 
 h2 a, h3 a {
 	font-weight: normal;
 	color: #aaa;
 	font-size: 0.8em;
+	font-weight: normal;
 }
 
 h3 {
 	margin-top: 0;
 	margin-bottom: 0.5em;
 	color: #fff;
+	font-weight: normal;
 }	
 
 .invisible_container {
