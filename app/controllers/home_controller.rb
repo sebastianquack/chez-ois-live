@@ -64,7 +64,7 @@ class HomeController < ApplicationController
 		@avatar = Avatar.find_by_id(params[:avatar_id])
   end
   
-  def moderate   
+  def moderate
   end
   
   def test

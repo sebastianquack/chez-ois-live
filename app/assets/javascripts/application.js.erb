@@ -74,7 +74,9 @@ channel.bind('read_suggestions', function(data) {
  		read_with_queue(data.content);
 });
 channel.bind('update_notice', function(data) {
+    console.log(data)
 		$('#moderator-notice').html(data.content)
+    $('#moderator-name').html(data.name)
 });
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		
@@ -112,7 +114,7 @@ $(document).ready(function() {
 	$('#notice_input_form').submit(function(e) {
 		e.preventDefault();
 		//if($('#notice_input').val().length > 0) {
-			submitNotice($('#notice_input').val())
+			submitNotice($('#notice_name').val(), $('#notice_content').val())
     //}
     $('#notice_input').val('');
 	});
@@ -430,12 +432,12 @@ function submitName(name) {
 }
 
 // moderator submits notice
-function submitNotice(content) {
+function submitNotice(name, content) {
 	//current_suggestions = null;
 	$.ajax({
 		type: "POST",
 	  url: baseURL + "notice/submit",
-   	data: "content=" + content,
+   	data: "content=" + content + "&name=" + name,
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
    		console.log(errorThrown);
    	}

@@ -1,16 +1,24 @@
 <div id="moderator_header"> 
-  <iframe scrolling="no" height="30" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/notice"></iframe>
+  <iframe scrolling="no" height="30" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/notice "></iframe>
 </div>
 
-<div id="moderator_play_area">
+<div id="moderator_play_area" class="gold">
+
+<% 
+if params[:user_name]
+  user_name = params[:user_name]
+else
+  user_name = "Stammgast"
+end
+%>
 
 <h1>Avatar 1</h1>
 <iframe scrolling="no" height="400" width="640" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/pov?avatar_id=1"></iframe>
-<iframe scrolling="no" height="400" width="400" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=1&user_name=<%= params[:user_name] %>"></iframe>
+<iframe scrolling="no" height="400" width="400" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=1&user_name=<%= user_name %>"></iframe>
 
 <h1>Avatar 2</h1>
 <iframe scrolling="no" height="400" width="640" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/pov?avatar_id=2"></iframe>
-<iframe scrolling="no" height="400" width="400" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=2&user_name=<%= params[:user_name] %>"></iframe>
+<iframe scrolling="no" height="400" width="400" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=2&user_name=<%= user_name %>"></iframe>
 
 <h1>Highscores</h1>
 <iframe scrolling="no" height="400" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/highscores"></iframe>

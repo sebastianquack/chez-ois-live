@@ -1,18 +1,17 @@
 <div id="moderator_header"> 
   <form id="notice_input_form">
-      <input id="notice_input" type="text" size="79" maxlength="79" autocomplete="off"/>
+      <input id="notice_name" type="text" size="30" maxlength="30" autocomplete="off" value="Moderator"/>:&nbsp;
+      <input id="notice_content" type="text" size="100" maxlength="100" autocomplete="off"/>
       <input id="notice_submit" type="submit" value="Anzeigen"/>
   </form>
   <iframe scrolling="no" height="30" width="800" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/notice"></iframe>
 </div>
 
-<div id="moderator_play_area">
+<div id="moderator_play_area" class="gold">
 
-<h1>Avatar 1</h1>
 <iframe scrolling="no" height="400" width="640" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/pov?avatar_id=1"></iframe>
 <iframe scrolling="no" height="400" width="400" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=1&moderate=1&user_name=Moderator"></iframe>
 
-<h1>Avatar 2</h1>
 <iframe scrolling="no" height="400" width="640" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/pov?avatar_id=2"></iframe>
 
 <iframe scrolling="no" height="400" width="400" src="<%= request.protocol + request.host + ":" + request.port.to_s %>/chat?avatar_id=2&moderate=1&user_name=Moderator"></iframe>
