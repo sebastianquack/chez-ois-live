@@ -221,6 +221,7 @@ span.suggestion_label {
 	padding-left: 5px;
 	min-height: 3em;
 	color: #fff;	
+
 }
 
 #suggestions_top {
@@ -244,10 +245,16 @@ span.suggestion_label {
 .suggestion_details {
 	font-size: 0.9em;
 	color: #aaa;
+	font-size: 80%;
 }
 
 .suggestion_content {
 	/*word-break: break-all;*/
+}
+
+.small_countdown {
+	display:inline-block; 
+	width: 40px;
 }
 
 .suggestion_controls input[type="button"] {

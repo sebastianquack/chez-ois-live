@@ -43,7 +43,7 @@ if(urlParams["sound_on"]) {
 	sound_on = true;
 }
 var server_time = null;
-var transmit_timeout = $('meta[name=timeout]').attr("content");
+var transmit_timeout = 9
 
 // flags and cashes for suggestion handling
 
@@ -90,6 +90,9 @@ channel.bind('update_highscores', function(data) {
 
 // document loaded - setup up user events
 $(document).ready(function() {
+
+  transmit_timeout = $("meta[name='timeout']").attr("content")
+  console.log(transmit_timeout)
 
 	$('.entry_link').click(function(e) {
 		if($('#display_user_name').html() == '') {
@@ -218,17 +221,17 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
   	}
 		
     if(suggestion.score < 0) {
-      item += '<span class="suggestion_details magenta">Contras: ' + -suggestion.score + '&nbsp;(' + time_string + ')</span>&nbsp;';            
+      item += '<span class="suggestion_details magenta">Contras: ' + -suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
     } else if(suggestion.score == 0) {
-      item += '<span class="suggestion_details">(' + time_string + ')</span>&nbsp;';            
+      item += '<span class="suggestion_details"><span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
     } else if(suggestion.score > 0) {
-      item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '&nbsp;(' + time_string + ')</span>&nbsp;';      
+      item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span>&nbsp;';      
     }
 		
     // moderator options			
     if(urlParams['moderate']) {
-      item += render_moderator_buttons(suggestion)
-		} else {
+      item += render_moderator_buttons(suggestion) + "&nbsp;"
+		}
 		    
       if(pathArray[1] != 'displays') {
         if(pathArray[1] != 'avatar') {
@@ -256,7 +259,6 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 					}	
         }			
       }
-    }
 	 				
 		list += '<li>' + item + '</li>';
 		myIndex++;
@@ -318,6 +320,9 @@ function updateTimers() {
 	} else { // suggestions are there
     if(transmit_suggestion) { // there's a suggestion in transmission
       //console.log(server_time - transmit_suggestion.vote_time)
+      if(!transmit_timeout) {
+        transmit_timeout = 10
+      }
       if(server_time - transmit_suggestion.vote_time > transmit_timeout) { // check if is still has time
         console.log("retiring " + transmit_suggestion.content)
         retireSuggestion(transmit_suggestion.id)

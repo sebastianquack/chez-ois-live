@@ -5,7 +5,7 @@ class HomeController < ApplicationController
   before_filter :set_settings
   
   def set_settings
-    @first_settings = Setting.first
+    @first_setting = Setting.first
   end
 
 	def landing
