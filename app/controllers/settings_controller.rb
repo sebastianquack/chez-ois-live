@@ -1,4 +1,5 @@
 class SettingsController < ApplicationController
+
   # GET /settings
   # GET /settings.json
   def index

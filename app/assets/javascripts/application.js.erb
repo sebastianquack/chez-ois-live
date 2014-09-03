@@ -43,7 +43,7 @@ if(urlParams["sound_on"]) {
 	sound_on = true;
 }
 var server_time = null;
-
+var transmit_timeout = $('meta[name=timeout]').attr("content");
 
 // flags and cashes for suggestion handling
 
@@ -309,7 +309,7 @@ function updateTimers() {
 	} else { // suggestions are there
     if(transmit_suggestion) { // there's a suggestion in transmission
       //console.log(server_time - transmit_suggestion.vote_time)
-      if(server_time - transmit_suggestion.vote_time > 10) { // check if is still has time
+      if(server_time - transmit_suggestion.vote_time > transmit_timeout) { // check if is still has time
         console.log("retiring " + transmit_suggestion.content)
         retireSuggestion(transmit_suggestion.id)
         transmit_suggestion = null

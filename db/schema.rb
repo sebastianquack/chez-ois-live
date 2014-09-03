@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140811141654) do
+ActiveRecord::Schema.define(:version => 20140903074840) do
 
   create_table "avatars", :force => true do |t|
     t.string   "name"
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(:version => 20140811141654) do
     t.integer  "redirect"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.integer  "timeout"
   end
 
   create_table "suggestions", :force => true do |t|

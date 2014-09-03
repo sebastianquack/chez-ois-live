@@ -2,6 +2,12 @@ require 'securerandom'
 
 class HomeController < ApplicationController
 
+  before_filter :set_settings
+  
+  def set_settings
+    @first_settings = Setting.first
+  end
+
 	def landing
 		@avatars = Avatar.all		
 		@user_name = cookies[:user_name]
