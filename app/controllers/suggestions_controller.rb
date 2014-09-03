@@ -371,9 +371,9 @@ class SuggestionsController < ApplicationController
 
 	def solo
     set_blacklist_status(params[:ip], params[:name], 3)
-    suggestion = Suggestion.find(params[:suggestion_id])
-    suggestion.name2 = "solo"
-    suggestion.save
+    suggestions = Suggestion.where(
+      "ip_address = :ip_address AND voting_started_at < :limit", :ip_address => params[:ip], :limit => 1.minute.ago
+      ).update_all :name2 => "solo"
     Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
     render json: :ok
   end
