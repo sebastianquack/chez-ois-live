@@ -16,6 +16,11 @@
     <%= f.text_field :name %>
   </div>
   <div class="field">
+    <%= f.label :gender %><br />
+    <%= f.select( :gender, options_for_select([["Male", "male"],["Female","female"]], @avatar.gender)) %>
+  </div>
+
+  <div class="field">
   	<%= f.label :place, "Place" %>
 		<%= f.select :place_id, Place.order('name').collect {|p| [ p.name, p.id ] }, { :include_blank => "None" } %>
 	</div

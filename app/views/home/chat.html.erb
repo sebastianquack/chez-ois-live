@@ -4,8 +4,7 @@
 </div>
 	
 <form id="suggestion_input_form" class="iframe_container">
-	  <h3>Hallo, <span class="magenta"><%= @user_name %></span>! Hier steuerst du <%= @avatar.name %> in <%= @avatar.place.name %>. Sag an, was er/sie tun soll!</h3>
-
+	  <h3>Hallo, <span class="magenta user_name_chat"><%= @user_name %></span>! Hier steuerst du <%= @avatar.name %> in <%= @avatar.place.name %>. Sag an, was <%= (@avatar.gender == "female") ? "sie" : "er" %> tun soll!</h3>
 
 	  <!--span class="suggestion_label"><%= @user_name %></span-->
     <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>

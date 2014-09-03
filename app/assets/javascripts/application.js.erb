@@ -77,6 +77,9 @@ channel.bind('update_notice', function(data) {
     console.log(data)
 		$('#moderator-notice').html(data.content)
     $('#moderator-name').html(data.name)
+    if(urlParams['moderate']) {
+      $('.user_name_chat').html(data.name)
+    }
 });
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		
@@ -116,7 +119,7 @@ $(document).ready(function() {
 		//if($('#notice_input').val().length > 0) {
 			submitNotice($('#notice_name').val(), $('#notice_content').val())
     //}
-    $('#notice_input').val('');
+    $('#notice_content').val('');
 	});
 
 	$('#suggestion_input_form').submit(function(e) {

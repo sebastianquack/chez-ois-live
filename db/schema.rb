@@ -11,16 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140903074840) do
+ActiveRecord::Schema.define(:version => 20140903105809) do
 
   create_table "avatars", :force => true do |t|
     t.string   "name"
     t.text     "pov_stream_embed"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
     t.integer  "place_id"
     t.text     "pov_stream_embed_local"
     t.string   "pushover_user_key"
+    t.string   "gender",                 :default => "male"
   end
 
   create_table "chat_items", :force => true do |t|
