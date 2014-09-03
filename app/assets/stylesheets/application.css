@@ -436,6 +436,10 @@ span.suggestion_label {
 	margin-top: 120px;
 }
 
+#user_highscores {
+	margin-bottom: 2em;
+}
+
 iframe {
 	border:none;
 	overflow:hidden;
