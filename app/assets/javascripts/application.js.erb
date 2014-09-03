@@ -214,7 +214,13 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
   		time_string = '<span class="magenta">' + time_string + '</span>';
   	}
 		
-  	item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '&nbsp;(' + time_string + ')</span>&nbsp;';
+    if(suggestion.score < 0) {
+      item += '<span class="suggestion_details">Contras: ' + -suggestion.score + '&nbsp;(' + time_string + ')</span>&nbsp;';            
+    } else if(suggestion.score == 0) {
+      item += '<span class="suggestion_details">(' + time_string + ')</span>&nbsp;';            
+    } else if(suggestion.score > 0) {
+      item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '&nbsp;(' + time_string + ')</span>&nbsp;';      
+    }
 		
     // moderator options			
     if(urlParams['moderate']) {
@@ -224,8 +230,8 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
       if(pathArray[1] != 'displays') {
         if(pathArray[1] != 'avatar') {
 				
-					pro_text = 'Prost';
-					contra_text = 'Contra';
+					pro_text = '△ Prost';
+					contra_text = '▽ Contra';
 	
 					if(user_vote) {
 						// user has already voted on this suggestion

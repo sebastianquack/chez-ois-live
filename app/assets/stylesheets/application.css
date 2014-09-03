@@ -166,7 +166,7 @@ h3 {
 	width: 100px;
 	color: #aaa;
 	vertical-align: top;
-	word-break: break-all;
+	/*word-break: break-all;*/
 }
 
 .chat_content {
@@ -174,7 +174,7 @@ h3 {
 	width: 230px;
 	vertical-align: top;
 	height: 1.5em;
-	word-break: break-all;
+	/*word-break: break-all;*/
 }
 
 .chat_status {
@@ -189,7 +189,7 @@ span.suggestion_label {
 	font-size: 0.9em;
 	color: #aaa;
 	width: 100px;
-	word-break: break-all;
+	/*word-break: break-all;*/
 }
 
 #suggestion_input {
@@ -247,7 +247,7 @@ span.suggestion_label {
 }
 
 .suggestion_content {
-	word-break: break-all;
+	/*word-break: break-all;*/
 }
 
 .suggestion_controls input[type="button"] {
@@ -355,7 +355,7 @@ span.suggestion_label {
 	position: relative;
 	float: left;
 	font-size: 0.8em;
-	word-break: break-all;
+	/*word-break: break-all;*/
 
 }
 
@@ -429,7 +429,6 @@ span.suggestion_label {
 }
 
 #moderator-notice {
-	word-wrap: break-word;
 	height: 80px;
 }
 
