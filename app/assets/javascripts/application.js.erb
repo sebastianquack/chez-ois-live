@@ -215,7 +215,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
   	}
 		
     if(suggestion.score < 0) {
-      item += '<span class="suggestion_details">Contras: ' + -suggestion.score + '&nbsp;(' + time_string + ')</span>&nbsp;';            
+      item += '<span class="suggestion_details magenta">Contras: ' + -suggestion.score + '&nbsp;(' + time_string + ')</span>&nbsp;';            
     } else if(suggestion.score == 0) {
       item += '<span class="suggestion_details">(' + time_string + ')</span>&nbsp;';            
     } else if(suggestion.score > 0) {
@@ -280,7 +280,7 @@ function render_transmit_suggestion(suggestion_transmit_data) {
       item += " (Überholspur)"
     }
     item += ': "' + suggestion_transmit_data.content + '"</span></span><br>'
-    item += '<span class="suggestion_details magenta">wird übertragen...</span>';
+    item += '<span class="suggestion_details">wird übertragen...</span>';
     
     // moderator options			
     if(urlParams['moderate']) {
