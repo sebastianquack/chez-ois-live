@@ -80,6 +80,7 @@ channel.bind('update_notice', function(data) {
     if(urlParams['moderate']) {
       $('.user_name_chat').html(data.name)
     }
+    $('#moderator-notice').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(300);
 });
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		
