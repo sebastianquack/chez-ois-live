@@ -123,7 +123,7 @@ class SuggestionsController < ApplicationController
       suggestion.status = 3
       suggestion.save
       read_suggestion(suggestion)
-      user_reward(suggestion, 5)
+      #user_reward(suggestion, 5)
     end
   end
     
@@ -267,7 +267,7 @@ class SuggestionsController < ApplicationController
 		end
 		if(suggestion.user_hash == cookies[:user_hash]) #prevent scoring on your own suggestions
 			return
-		end
+    end
 		user_score = UserScore.find(:first, :conditions => {
 				:user_hash => suggestion.user_hash,
 				:avatar_id => params[:avatar_id]
@@ -306,7 +306,7 @@ class SuggestionsController < ApplicationController
   def decline_suggestion suggestion 
 		suggestion.status = 4	
 		suggestion.save
-		user_reward(suggestion, -5)
+		#user_reward(suggestion, -5)
   end
 
 	def decline
