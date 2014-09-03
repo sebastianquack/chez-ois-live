@@ -62,13 +62,24 @@ class SuggestionsController < ApplicationController
 		blacklist_entry = IpBlacklist.find_by_ip_address(request.remote_ip)
 		if blacklist_entry
 			if blacklist_entry.status == 0
-				render json: :blacklisted
+				render json: {:status => "blacklisted", :name => solo_entry.name}
 				return
       elsif blacklist_entry.status == 2
         @boost = true
+      elsif blacklist_entry.status == 3
+        @solo = true
       end
 		end
         
+    # check if someone is soloing
+    solo_entry = IpBlacklist.find_by_status(3)
+    if solo_entry
+      if solo_entry.ip_address != request.remote_ip
+        render json: {:status => "solo", :name => solo_entry.user_name}
+        return
+      end
+    end
+      
     # create a new suggestion
 		@suggestion = Suggestion.new(
 				:time_string => Time.now.to_i,
@@ -90,11 +101,15 @@ class SuggestionsController < ApplicationController
       boost_suggestion(@suggestion)
 		end
 
+    if @solo 
+      @suggestion.name2 = "solo"
+    end
+
 		if @suggestion.save
       Pusher.trigger('chez_ois_chat', 'update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
       #Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
       if @boost
-        render json: :boost
+        render json: {:status => "boost"}
       else
 			  render json: @suggestion
       end
@@ -353,7 +368,16 @@ class SuggestionsController < ApplicationController
     Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
     render json: :ok
   end
-  
+
+	def solo
+    set_blacklist_status(params[:ip], params[:name], 3)
+    suggestion = Suggestion.find(params[:suggestion_id])
+    suggestion.name2 = "solo"
+    suggestion.save
+    Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+    render json: :ok
+  end
+
 	def reset
 		blocked_ip = IpBlacklist.find_by_ip_address(params[:ip])
 		blocked_ip.status = 1
