@@ -144,7 +144,7 @@ $(document).ready(function() {
   // get things going
 	updateSuggestions();	
   updateHighscores();
-	if($('#blacklist')) {
+	if($('.blacklist')) {
 		updateBlacklist();
 	}
 
@@ -515,7 +515,7 @@ function render_blacklist(data) {
 		list += '</li>';
 	});		
 	list += '</ul>';
-	$('#blacklist').html(list);
+	$('.blacklist').html(list);
 	updateAjaxLinks();
 }
 
