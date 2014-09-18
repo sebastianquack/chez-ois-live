@@ -457,10 +457,25 @@ iframe {
 }
 
 .blacklist {
-	width: 400px;
+	width: 300px;
 	margin: auto;
 }
 
 .blacklist {
 	float: right;
+}
+
+.log {
+	padding: 40px;
+}
+
+.log h1, .log ul li {
+	color: #000;
+}
+
+.time_detail_log {
+	font-size: 80%;
+	width: 100px;
+	display:inline-block; 
+	color: #555;
 }

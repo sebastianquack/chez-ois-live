@@ -50,6 +50,8 @@ AvatarChat::Application.routes.draw do
   
   match '/test' => 'home#test'
   
+  match '/log' => 'home#log'
+  
   root :to => 'home#landing'
 
 end

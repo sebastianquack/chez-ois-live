@@ -49,6 +49,9 @@ class HomeController < ApplicationController
 		render :template => 'home/terminal', :layout => 'terminal'
 	end
   
+  def log 
+    render :temploate => 'home/log', :layout => 'plain'
+  end
   
   # iframe views
 
