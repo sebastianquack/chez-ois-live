@@ -1,0 +1,40 @@
+<% unless params[:limit]
+    params[:limit] = 100
+  end
+%>
+
+<div class="log">
+  
+  <h1>Moderator Chat</h1>
+  <ul>
+    <% ChatItem.order('created_at DESC').limit(params[:limit]).each do |chat_item| %>
+    <li>
+      <% unless params[:notimes] %>
+        <span class="time_detail_log"><%= chat_item.created_at.strftime("%a %H:%M:%S") %></span>
+      <% end %>
+      <% unless params[:nonames] %>
+        <span class="magenta"><%= chat_item.name %></span>:
+      <% end %> 
+      <%= chat_item.content %>
+    </li>
+    <% end %>
+  </ul>
+
+  <% [1, 2].each do |avatar_id| %>
+  <h1>Avatar <%= avatar_id %> Chat</h1>
+  <ul>
+    <% Suggestion.where(:avatar_id => avatar_id, :status => 4).order('updated_at DESC').limit(params[:limit]).each do |suggestion| %>
+    <li>
+      <% unless params[:notimes] %>
+        <span class="time_detail_log"><%= suggestion.updated_at.strftime("%a %H:%M:%S") %></span>
+      <% end %>
+      <% unless params[:nonames] %>
+        <span class="magenta"><%= suggestion.name %></span>: 
+      <% end %>
+      <%= suggestion.content %>
+    </li>
+    <% end %>
+  </ul>
+  <% end %>
+
+</div>
