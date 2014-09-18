@@ -479,3 +479,7 @@ iframe {
 	display:inline-block; 
 	color: #555;
 }
+
+.dark {
+	color: #000;
+}
