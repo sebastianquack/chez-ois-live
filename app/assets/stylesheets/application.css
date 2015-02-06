@@ -20,7 +20,7 @@ body {
 	font-family: 'Roboto Slab', serif;
   font-size: 16px;
 	padding: 0px;
-	margin: 0px;
+	margin: 0px;	
 }
 
 .wood {
@@ -61,7 +61,7 @@ ul {
 
 ul li {
 	padding-bottom: 0.2em;
-	color: #fff;
+	color: #000;
 }
 
 h1 {
@@ -79,7 +79,7 @@ h2 a, h3 a {
 h3 {
 	margin-top: 0;
 	margin-bottom: 0.5em;
-	color: #fff;
+	color: #000;
 	font-weight: normal;
 	font-size: 100%;
 }	
@@ -101,6 +101,7 @@ h3 {
 /* landing page */
 
 #name_message {
+	display:none;
   color: #f80060;
   font-size: 1.1em;
   font-weight: bold; 
@@ -109,12 +110,18 @@ h3 {
 }
 
 #name_container {
-	float: left;
+	display:none;
 }
 
 #chat_name {
 	font-size: 1em;
 	width: 14em;
+}
+
+#new_name_button {
+	text-decoration: underline;
+	color: #aaa;
+	font-size: 0.8em;
 }
 
 .fix_embed_container {
@@ -205,22 +212,18 @@ span.suggestion_label {
 
 #suggestion_message {
 	font-size: 0.8em;
-	color: #fff;
+	color: #000;
 }
 
 .chat_status a {
 	color: #aaa;
 }
 
-#avatar_container {
-	float: left;
-}
-
 #suggestion_transmit {
 	padding-top: 5px;
 	padding-left: 5px;
 	min-height: 3em;
-	color: #fff;	
+	color: #000;	
 
 }
 
@@ -351,10 +354,13 @@ span.suggestion_label {
 	width: auto;
 }
 
-#suggestion_input_form {
+#chat_input_area {
 	position: absolute;
 	bottom: 0px;
-	padding-right: 5px;
+	width: 100%;
+}
+
+#suggestion_input_form {
 }
 
 span.suggestion_label {
@@ -393,15 +399,25 @@ span.suggestion_label {
 	display: none;
 }
 
-#avatar_container {
-	width: auto;
-}
-
 .empty_message {
 	width: auto;
 }
 
 /* setup for iframe embedding */
+
+#left_column {
+	width: 60%;
+	height: 100%;
+	position:absolute;
+	left: 0;
+}
+
+#right_column {
+	width: 40%;
+	height: 100%;
+	position:absolute;
+	right: 0;
+}
 
 #suggestion_input {
 	width: 50%;
@@ -454,6 +470,7 @@ iframe {
 
 .iframe_container {
 	padding-left: 5px;
+	background-color: #a07f3c;
 }
 
 .blacklist {

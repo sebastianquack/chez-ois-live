@@ -1,14 +1,39 @@
-<div id="avatar_container" class="iframe_container">
-    <div id="suggestion_transmit"></div>
-    <div id="suggestions_top"></div>
-</div>
-	
-<form id="suggestion_input_form" class="iframe_container">
-	  <h3>Hallo, <span class="magenta user_name_chat"><%= @user_name %></span>! Hier steuerst du <%= @avatar.name %> in <%= @avatar.place.name %>. Sag an, was <%= (@avatar.gender == "female") ? "sie" : "er" %> tun soll!</h3>
+<div id="left_column">
+<% if params[:local_embed] %>
+  <%= @avatar.pov_stream_embed_local.html_safe if @avatar.pov_stream_embed_local %>
+<% else %>
+	<%= @avatar.pov_stream_embed.html_safe if @avatar.pov_stream_embed %>
+<% end %>
 
+<form id="suggestion_input_form">
+	  <h3>Hallo, <span id="display_user_name" class="magenta user_name_chat"><%= @user_name %></span> <span id="new_name_button">(ändern)</span>. Hier steuerst du <%= @avatar.name %>!<br> Tipp ein, was <%= (@avatar.gender == "female") ? "sie" : "er" %> tun soll! </h3>     
 	  <!--span class="suggestion_label"><%= @user_name %></span-->
     <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>
-    <input id="suggestion_submit" type="submit" value="Ansagen"/>
+    <input id="suggestion_submit" type="submit" value="Los!"/>
     <input id="chat_name" type="hidden" size="10" value="<%= @user_name %>"/>
     <div id="suggestion_message"></div>
 </form>
+
+<div id="chat_input_area">
+	
+<div id="name_container">
+	<h3>Wie möchtest du heißen?</h3>
+	<span id="name_message"></span>
+	<form id="name_input_form">
+	<input id="new_chat_name" type="text" size="10" value="" maxlength="10"/>
+	<input id="name_submit" type="submit" value="Ok"/>
+	</form>
+</div>
+
+</div>
+
+</div>
+
+<div id="right_column">
+
+<div id="voting_area">
+    <div id="suggestion_transmit"></div>
+    <div id="suggestions_top"></div>
+</div>
+
+</div>

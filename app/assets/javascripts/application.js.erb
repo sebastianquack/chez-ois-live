@@ -136,11 +136,17 @@ $(document).ready(function() {
 
 	$('#name_input_form').submit(function(e) {
 			e.preventDefault();
-			if($('#chat_name').val().length > 0) {
-				submitName($('#chat_name').val());
-			}
+			if($('#new_chat_name').val().length > 0) {
+				submitName($('#new_chat_name').val());
+        $('#suggestion_input_form').show();
+      }
 	});
-	
+  
+  $('#new_name_button').click(function(e) {
+    $('#name_container').slideDown();    
+    $('#suggestion_input_form').hide();
+  });
+
   // get things going
 	updateSuggestions();	
   updateHighscores();
@@ -228,7 +234,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
     } else if(suggestion.score == 0) {
       item += '<span class="suggestion_details"><span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
     } else if(suggestion.score > 0) {
-      item += '<span class="suggestion_details">Prosts: ' + suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span>&nbsp;';      
+      item += '<span class="suggestion_details">Pros: ' + suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span>&nbsp;';      
     }
 		
     // moderator options			
@@ -239,7 +245,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
       if(pathArray[1] != 'displays') {
         if(pathArray[1] != 'avatar') {
 				
-					pro_text = '△ Prost';
+					pro_text = '△ Pro';
 					contra_text = '▽ Contra';
 	
 					if(user_vote) {
@@ -439,10 +445,9 @@ function submitName(name) {
 	  url: baseURL + "suggestions/update_user_name",
    	data: "name=" + name,
    	success: function(msg){
-			$('#name_container').slideUp(function() { 	   	
-				$('#comma').html(', ');
-				$('#display_user_name').html(name); 
-			});
+			$('#chat_name').val(name); 
+      $('#display_user_name').html(name); 
+			$('#name_container').slideUp();
    		console.log(msg);
    	},
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -474,7 +479,7 @@ function render_highscores(data) {
 	var list = '<ul>';
 	$.each(data.suggestion_highscores, function(index, entry) {			
 		list += '<li>';
-		list += (index + 1) + '. "' + entry.content + '" <span class="highscore_details">' + entry.name + ', Prosts: ' + entry.score + '</span>';
+		list += (index + 1) + '. "' + entry.content + '" <span class="highscore_details">' + entry.name + ', Pros: ' + entry.score + '</span>';
 		list += '</li>';
 	});		
 	list += '</ul>';
@@ -483,7 +488,7 @@ function render_highscores(data) {
 	var list = '<ul>';
 	$.each(data.user_highscores, function(index, entry) {
 		list += '<li>';
-		list += (index + 1) + '. ' + entry.user_name + ' <span class="highscore_details">Prosts: ' + entry.score + '</span>';
+		list += (index + 1) + '. ' + entry.user_name + ' <span class="highscore_details">Pros: ' + entry.score + '</span>';
 		list += '</li>';
 	});		
 	list += '</ul>';
