@@ -56,9 +56,12 @@ class HomeController < ApplicationController
   # iframe views
 
   def chat
-		#@user_name = params[:user_name]
-		@user_name = cookies[:user_name]
-		@user_name = "Stammgast" if @user_name.nil?
+    if params[:user_name] 
+      @user_name = params[:user_name]
+    else
+      @user_name = cookies[:user_name]
+      @user_name = "Stammgast" if @user_name.nil?
+    end
 
 		params[:avatar_id] = 1 if params[:avatar_id].nil?
 		@avatar = Avatar.find_by_id(params[:avatar_id])
