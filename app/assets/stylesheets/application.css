@@ -355,8 +355,6 @@ span.suggestion_label {
 }
 
 #chat_input_area {
-	position: absolute;
-	bottom: 0px;
 	width: 100%;
 }
 
@@ -412,7 +410,7 @@ span.suggestion_label {
 
 #right_column {
 	height: 100%;
-	width: 40%;
+	width: 35%;
 	float:right;
 }
 
