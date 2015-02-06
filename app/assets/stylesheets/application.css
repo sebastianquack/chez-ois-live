@@ -406,17 +406,13 @@ span.suggestion_label {
 /* setup for iframe embedding */
 
 #left_column {
-	width: 60%;
 	height: 100%;
-	position:absolute;
-	left: 0;
+	float:left;
 }
 
 #right_column {
-	width: 40%;
 	height: 100%;
-	position:absolute;
-	right: 0;
+	float:left;
 }
 
 #suggestion_input {
