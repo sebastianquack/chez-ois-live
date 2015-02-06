@@ -412,6 +412,7 @@ span.suggestion_label {
 
 #right_column {
 	height: 100%;
+	width: 40%;
 	float:left;
 }
 
