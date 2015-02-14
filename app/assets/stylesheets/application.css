@@ -431,7 +431,6 @@ span.suggestion_label {
 	width: 100%;
 	top: 0px;
 	padding: 20px;
-	background-color: #a07f3c;
 	border-bottom: 1px solid #444;
 }
 
@@ -450,8 +449,15 @@ span.suggestion_label {
 	height: 80px;
 }
 
+.background_gray {
+	position: fixed;
+	background-color: #888;
+	height: 100%;
+	width: 100%;	
+}
+
 #moderator_play_area {
-	margin-top: 165px;
+	margin-top: 195px;
 }
 
 #user_highscores {
@@ -465,7 +471,6 @@ iframe {
 
 .iframe_container {
 	padding-left: 5px;
-	background-color: #a07f3c;
 }
 
 .blacklist {

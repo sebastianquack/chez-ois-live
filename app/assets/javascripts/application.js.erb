@@ -317,7 +317,7 @@ function render_transmit_suggestion(suggestion_transmit_data) {
 function render_moderator_buttons(suggestion) {
   item = '&nbsp;<input type="button" class="ajax" href="suggestions/' + suggestion.id + '/decline?avatar_id=' + avatar_id + '" class="ajax" value="decline" />';
   item += '&nbsp;<input type="button"/ value="block" class="ajax" href="admin/block?ip=' + suggestion.ip + '&name=' + suggestion.name + '&suggestion_id=' + suggestion.id + '&avatar_id=' + avatar_id + '">';
-  item += '&nbsp;<input type="button"/ value="boost" class="ajax" href="admin/boost?ip=' + suggestion.ip + '&name=' + suggestion.name + '&suggestion_id=' + suggestion.id + '&avatar_id=' + avatar_id + '">'; 
+  //item += '&nbsp;<input type="button"/ value="boost" class="ajax" href="admin/boost?ip=' + suggestion.ip + '&name=' + suggestion.name + '&suggestion_id=' + suggestion.id + '&avatar_id=' + avatar_id + '">'; 
   item += '&nbsp;<input type="button"/ value="solo" class="ajax" href="admin/solo?ip=' + suggestion.ip + '&name=' + suggestion.name + '&suggestion_id=' + suggestion.id + '&avatar_id=' + avatar_id + '">'; 
   return item
 }
