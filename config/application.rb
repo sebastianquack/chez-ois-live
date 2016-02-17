@@ -63,6 +63,9 @@ module AvatarChat
     config.admin_password = ENV['chez_ois_admin_password']
     
     #test
+    config.action_dispatch.default_headers = {
+        'X-Frame-Options' => 'ALLOWALL'
+    }
     
     
   end
