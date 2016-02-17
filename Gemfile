@@ -36,3 +36,5 @@ gem 'jquery-rails'
 # gem 'debugger'
 
 gem 'pusher'
+
+gem 'rails_12factor'
