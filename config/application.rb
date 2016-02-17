@@ -62,6 +62,8 @@ module AvatarChat
     config.admin_user = "admin"
     config.admin_password = ENV['chez_ois_admin_password']
     
+    #test
+    
     
   end
 end
