@@ -19,8 +19,9 @@ padding:0;
 body {
 	font-family: 'Roboto Slab', serif;
   font-size: 16px;
-	padding: 0px;
+	padding: 5px;
 	margin: 0px;	
+	background-color: #fff;
 }
 
 .wood {
@@ -410,8 +411,9 @@ span.suggestion_label {
 
 #right_column {
 	height: 100%;
-	width: 35%;
-	float:right;
+	/*width: 35%;*/
+	float:left;
+	padding-left: 10px;
 }
 
 #suggestion_input {
@@ -447,6 +449,7 @@ span.suggestion_label {
 
 #moderator-notice {
 	height: 80px;
+	color: #e71660;
 }
 
 .background_gray {

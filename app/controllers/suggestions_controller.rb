@@ -15,6 +15,7 @@ class SuggestionsController < ApplicationController
         logger.debug "direct to transmit"
         accept_suggestion(@suggestions_top[0])
         @suggestion_transmit = @suggestions_top[0]
+        @suggestions_top = @suggestions_top.to_a
         @suggestions_top.shift
       end
     end      
@@ -62,7 +63,7 @@ class SuggestionsController < ApplicationController
 		blacklist_entry = IpBlacklist.find_by_ip_address(request.remote_ip)
 		if blacklist_entry
 			if blacklist_entry.status == 0
-				render json: {:status => "blacklisted", :name => solo_entry.name}
+				render json: {:status => "blacklisted", :name => blacklist_entry.user_name}
 				return
       elsif blacklist_entry.status == 2
         @boost = true
@@ -84,9 +85,9 @@ class SuggestionsController < ApplicationController
 		@suggestion = Suggestion.new(
 				:time_string => Time.now.to_i,
         :voting_started_at => Time.now.to_i,
-				:content => params[:content], 
-				:name => params[:name],
-				:avatar_id => params[:avatar_id],
+				:content => suggestion_params[:content], 
+				:name => suggestion_params[:name],
+				:avatar_id => suggestion_params[:avatar_id],
 				:user_hash => cookies['user_hash'],
 				:score => 0,
 				:status => 1, # go directly to voting
@@ -179,7 +180,7 @@ class SuggestionsController < ApplicationController
 	def retire
     suggestion = Suggestion.find(params[:id])
     retire_suggestion(suggestion)
-    Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+    Pusher['chez_ois_chat'].trigger('update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(suggestion_params[:avatar_id]))
     render json: suggestion	
 	end
 
@@ -187,10 +188,9 @@ class SuggestionsController < ApplicationController
 
 	def vote 
 		suggestion = Suggestion.find(params[:id])
-		user_vote = UserVote.find(:first, :conditions => {
+		user_vote = UserVote.where({
 				:user_hash => cookies[:user_hash],
-				:suggestion_id => suggestion.id
-		})
+				:suggestion_id => suggestion.id}).first
 		
 		if params[:abort]
 
@@ -242,7 +242,7 @@ class SuggestionsController < ApplicationController
 								
 		suggestion.save
 
-		Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+		Pusher['chez_ois_chat'].trigger('update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(suggestion_params[:avatar_id]))
 		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
 		render json: suggestion
 	end
@@ -250,11 +250,11 @@ class SuggestionsController < ApplicationController
   # USER OPERATIONS
 
 	def update_user_name 
-		cookies.permanent[:user_name] = params[:name]		
+		cookies.permanent[:user_name] = user_params[:name]		
 		user = UserScore.find_by_user_hash(cookies['user_hash'])
 		if(user)
-			if(user.user_name != params[:name]) 
-				user.user_name = params[:name]
+			if(user.user_name != user_params[:name]) 
+				user.user_name = user_params[:name]
 				user.save
 			end
 		end
@@ -270,13 +270,13 @@ class SuggestionsController < ApplicationController
     end
 		user_score = UserScore.find(:first, :conditions => {
 				:user_hash => suggestion.user_hash,
-				:avatar_id => params[:avatar_id]
+				:avatar_id => user_params[:avatar_id]
 		})
 		unless user_score 
 			user_score = UserScore.new(
 				:user_hash => suggestion.user_hash,
 				:user_name => suggestion.name,
-				:avatar_id => params[:avatar_id],
+				:avatar_id => user_params[:avatar_id],
 				:score => 0
 			)
 		end
@@ -345,7 +345,7 @@ class SuggestionsController < ApplicationController
 
 	def block
     set_blacklist_status(params[:ip], params[:name], 0)
-    suggestions = Suggestion.where(:ip_address => params[:ip]).update_all status: 4
+    suggestions = Suggestion.where(:ip_address => suggestion_params[:ip]).update_all status: 4
     Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
 		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)    
 
@@ -393,6 +393,16 @@ class SuggestionsController < ApplicationController
 		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
 		render json: load_highscores
 	end
+
+  private
+
+  def suggestion_params
+    params.permit(:content, :avatar_id, :ip_address, :name, :name2, :user_hash, :score, :status, :time_string, :voting_started_at, :id)
+  end
+
+  def user_params
+    params.permit(:name, :avatar_id)
+  end
   
 
 end

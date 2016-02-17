@@ -3,54 +3,54 @@ AvatarChat::Application.routes.draw do
   resources :settings
   resources :places
 
-	match '/avatars/list' => 'avatars#list'
+	get '/avatars/list' => 'avatars#list'
   resources :avatars
 
-	match '/chat_items/submit' => 'chat_items#submit'
-	match '/chat_items/latest' => 'chat_items#latest'
+	#post '/chat_items/submit' => 'chat_items#submit'
+	#get '/chat_items/latest' => 'chat_items#latest'
 
-	match '/suggestions/list' => 'suggestions#list'
-	match '/suggestions/submit' => 'suggestions#submit'
+	get '/suggestions/list' => 'suggestions#list'
+	post '/suggestions/submit' => 'suggestions#submit'
 
-	match '/suggestions/:id/vote' => 'suggestions#vote'
-	match '/suggestions/:id/start_vote' => 'suggestions#start_vote'
-	match '/suggestions/:id/retire' => 'suggestions#retire'
-	match '/suggestions/:id/accept' => 'suggestions#accept'
-	match '/suggestions/:id/decline' => 'suggestions#decline'
+	post '/suggestions/:id/vote' => 'suggestions#vote'
+	post '/suggestions/:id/start_vote' => 'suggestions#start_vote'
+	post '/suggestions/:id/retire' => 'suggestions#retire'
+	post '/suggestions/:id/accept' => 'suggestions#accept'
+	post '/suggestions/:id/decline' => 'suggestions#decline'
 
-	match '/suggestions/global_highscores' => 'suggestions#global_highscores'
-	match '/suggestions/highscores' => 'suggestions#highscores'
-	match '/suggestions/clear_highscores' => 'suggestions#clear_highscores'
-	match '/suggestions/update_user_name' => 'suggestions#update_user_name'
+	get '/suggestions/global_highscores' => 'suggestions#global_highscores'
+	get '/suggestions/highscores' => 'suggestions#highscores'
+	post '/suggestions/clear_highscores' => 'suggestions#clear_highscores'
+	post '/suggestions/update_user_name' => 'suggestions#update_user_name'
 
-  match '/admin/blacklist' => 'suggestions#blacklist'
-  match '/admin/block' => 'suggestions#block'
-  match '/admin/boost' => 'suggestions#boost'
-  match '/admin/solo' => 'suggestions#solo'
-  match '/admin/reset' => 'suggestions#reset'
-  match '/admin/delete_suggestions' => 'admin#delete_suggestions'
+  get '/admin/blacklist' => 'suggestions#blacklist'
+  post '/admin/block' => 'suggestions#block'
+  post '/admin/boost' => 'suggestions#boost'
+  post '/admin/solo' => 'suggestions#solo'
+  post '/admin/reset' => 'suggestions#reset'
+  post '/admin/delete_suggestions' => 'admin#delete_suggestions'
   
-  match '/displays/projection' => 'displays#projection'
-  match '/displays/projection2' => 'displays#projection2'
+  #get '/displays/projection' => 'displays#projection'
+  #get '/displays/projection2' => 'displays#projection2'
 
-	match '/displays/hd' => 'displays#hd'
-	match '/displays/hd2' => 'displays#hd2'
+	#get '/displays/hd' => 'displays#hd'
+	#get '/displays/hd2' => 'displays#hd2'
 
-	match '/play' => 'home#play'  
-	match '/avatar' => 'home#terminal'
-	match '/terminal' => 'home#terminal'
+	#get '/play' => 'home#play'  
+	#get '/avatar' => 'home#terminal'
+	#get '/terminal' => 'home#terminal'
 
-	match '/chat' => 'home#chat'  
-  match '/pov' => 'home#pov'  
-  match '/highscores' => 'home#highscores'  
+  get '/chat' => 'home#chat'  
+  #get '/pov' => 'home#pov'  
+  #get '/highscores' => 'home#highscores'  
 
-  match '/moderate' => 'home#moderate'
-  match '/notice' => 'chat_items#latest'
-  match '/notice/submit' => 'chat_items#submit'
+  get '/moderate' => 'home#moderate'
+  get '/notice' => 'chat_items#latest'
+  post '/notice/submit' => 'chat_items#submit'
   
-  match '/test' => 'home#test'
+  #get '/test' => 'home#test'
   
-  match '/log' => 'home#log'
+  get '/log' => 'home#log'
   
   root :to => 'home#chat'
 

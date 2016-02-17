@@ -40,7 +40,7 @@ class PlacesController < ApplicationController
   # POST /places
   # POST /places.json
   def create
-    @place = Place.new(params[:place])
+    @place = Place.new(place_params)
 
     respond_to do |format|
       if @place.save
@@ -59,7 +59,7 @@ class PlacesController < ApplicationController
     @place = Place.find(params[:id])
 
     respond_to do |format|
-      if @place.update_attributes(params[:place])
+      if @place.update_attributes(place_params)
         format.html { redirect_to @place, notice: 'Place was successfully updated.' }
         format.json { head :no_content }
       else
@@ -80,4 +80,13 @@ class PlacesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  private
+  
+  def place_params
+    params.require(:place).permit(:fix_stream_embed, :fix_stream_embed_local, :name)
+  end
+
+
+
 end

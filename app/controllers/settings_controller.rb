@@ -41,7 +41,7 @@ class SettingsController < ApplicationController
   # POST /settings
   # POST /settings.json
   def create
-    @setting = Setting.new(params[:setting])
+    @setting = Setting.new(setting_params)
 
     respond_to do |format|
       if @setting.save
@@ -60,7 +60,7 @@ class SettingsController < ApplicationController
     @setting = Setting.find(params[:id])
 
     respond_to do |format|
-      if @setting.update_attributes(params[:setting])
+      if @setting.update_attributes(setting_params)
         format.html { redirect_to @setting, notice: 'Setting was successfully updated.' }
         format.json { head :no_content }
       else
@@ -81,4 +81,12 @@ class SettingsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  private
+  
+  def setting_params
+    params.require(:setting).permit(:redirect, :redirect_to, :timeout)
+  end
+  
+  
 end
