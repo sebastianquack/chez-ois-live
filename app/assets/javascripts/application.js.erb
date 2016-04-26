@@ -227,11 +227,11 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
     
   	time_string = minutes_left + ':' + pad(seconds_left);
   	if(minutes_left == 0 && seconds_left <= 5) {
-  		time_string = '<span class="magenta">' + time_string + '</span>';
+  		time_string = '<span class="warning">' + time_string + '</span>';
   	}
 		
     if(suggestion.score < 0) {
-      item += '<span class="suggestion_details magenta">Contras: ' + -suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
+      item += '<span class="suggestion_details warning">Contras: ' + -suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
     } else if(suggestion.score == 0) {
       item += '<span class="suggestion_details"><span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
     } else if(suggestion.score > 0) {

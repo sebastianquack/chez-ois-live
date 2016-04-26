@@ -4,8 +4,6 @@
 </style>
 <% end %>
 
-<div id="left_column">
-
 <% unless params[:hide_pov] == "1" %>
   <% if params[:local_embed] %>
       <%= @avatar.pov_stream_embed_local.html_safe if @avatar.pov_stream_embed_local %>
@@ -14,56 +12,46 @@
   <% end %>
 <% end %>
   
-<% unless params[:hide_input] == "1" %>
-<form id="suggestion_input_form">
-	  <h3>Hallo, <span id="display_user_name" class="magenta user_name_chat"><%= @user_name %></span> <span id="new_name_button">(ändern)</span>. Hier steuerst du <%= @avatar.name %>!<br> Tipp ein, was <%= (@avatar.gender == "female") ? "sie" : "er" %> tun soll! </h3>     
-	  <!--span class="suggestion_label"><%= @user_name %></span-->
-    <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>
-    <input id="suggestion_submit" type="submit" value="Los!"/>
-    <input id="chat_name" type="hidden" size="10" value="<%= @user_name %>"/>
-    <div id="suggestion_message"></div>
-</form>
-
-<div id="chat_input_area">
-	
-  <div id="name_container">
-	  <h3>Wie möchtest du heißen?</h3>
-    <span id="name_message"></span>
-    <form id="name_input_form">
-      <input id="new_chat_name" type="text" size="10" value="" maxlength="10"/>
-      <input id="name_submit" type="submit" value="Ok"/>
-    </form>
-  </div>
-
-<div>
-<% end %>
-
-</div>
-
-<% unless params[:hide_notice] == "1" %>
-<div id="moderator_notice_area">
-
-  <span id="moderator-name" class="dark"><%= @chat_item.name %></span><span class="dark">:</span> <span id="moderator-notice"><%= @chat_item.content %></span>
-
-  <% if @moderate %>
-  <form id="notice_input_form">
-      <input id="notice_name" type="text" size="30" maxlength="30" autocomplete="off" value="Moderator"/>:&nbsp;
-      <input id="notice_content" type="text" size="100" maxlength="100" autocomplete="off"/>
-      <input id="notice_submit" type="submit" value="Anzeigen"/>
-  </form>
-  <% end %>
-  
-</div>
-<% end %>
-
-<div id="right_column">
-
-<div id="voting_area">
+<% unless params[:hide_chat] == "1" %>
+  <div id="suggestions_container" class="container">
     <div id="suggestion_transmit"></div>
     <div id="suggestions_top"></div>
-</div>
+  </div>
+<% end %>  
+  
+<% unless params[:hide_input] == "1" %>
+  <div id="user_input_container" class="container">
+    <form id="suggestion_input_form">
+    	  <p>Hallo, <span id="display_user_name" class="magenta user_name_chat"><%= @user_name %></span> <span id="new_name_button">(ändern)</span>. Hier steuerst du <%= @avatar.name %>! Tipp ein, was <%= (@avatar.gender == "female") ? "sie" : "er" %> tun soll und bestätige mit der Return-Taste!</p>     
+        <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>
+        <!--input id="suggestion_submit" type="submit" value="Los!"/-->
+        <input id="chat_name" type="hidden" value="<%= @user_name %>"/>
+        <div id="suggestion_message"></div>
+    </form>
 
-</div>
+    <div id="name_container">
+      <p>Wie möchtest du heißen?</p>
+      <span id="name_message"></span>
+      <form id="name_input_form">
+        <input id="new_chat_name" type="text" size="10" value="" maxlength="10"/>
+        <input id="name_submit" type="submit" value="Ok"/>
+      </form>
+    </div>
+  </div>
+<% end %>
+  
+<% unless params[:hide_notice] == "1" %>
+  <div id="moderator_container" class="container">
+    <p><span id="moderator-name" class="moderator-name"><%= @chat_item.name %></span><span class="moderator-name">:</span> <span id="moderator-notice"><%= @chat_item.content %></span></p>
+    <% if @moderate %>
+    <form id="notice_input_form">
+        <input id="notice_name" type="text" autocomplete="off" value="Moderator"/>:&nbsp;
+        <input id="notice_content" type="text" autocomplete="off"/>
+        <input id="notice_submit" type="submit" value="Anzeigen"/>
+    </form>
+    <% end %>
+  </div>
+<% end %>
 
 <% if @moderate %>
   <div class="blacklist"></div>
