@@ -20,10 +20,6 @@
     <%= f.select( :gender, options_for_select([["Male", "male"],["Female","female"]], @avatar.gender)) %>
   </div>
 
-  <!--div class="field">
-  	<%= f.label :place, "Place" %>
-		<%= f.select :place_id, Place.order('name').collect {|p| [ p.name, p.id ] }, { :include_blank => "None" } %>
-	</div-->
   <div class="field">
     <%= f.label :pov_stream_embed %><br />
     <%= f.text_area :pov_stream_embed %>
