@@ -85,7 +85,7 @@ iframe {
 /* suggestions list with voting*/
 
 #suggestions_container {
-	min-height: 15em;
+	min-height: 5em;
 }
 
 #suggestions_top ul {
