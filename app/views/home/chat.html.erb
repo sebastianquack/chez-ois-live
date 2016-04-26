@@ -33,9 +33,22 @@
 
 </div>
 
-<div id="moderator_notice_area"><span id="moderator-name" class="dark"><%= @chat_item.name %></span><span class="dark">:</span> <span id="moderator-notice"><%= @chat_item.content %></span></div>
-
 </div>
+
+<div id="moderator_notice_area">
+
+  <span id="moderator-name" class="dark"><%= @chat_item.name %></span><span class="dark">:</span> <span id="moderator-notice"><%= @chat_item.content %></span>
+
+  <% if @moderate == 1 %>
+  <form id="notice_input_form">
+      <input id="notice_name" type="text" size="30" maxlength="30" autocomplete="off" value="Moderator"/>:&nbsp;
+      <input id="notice_content" type="text" size="100" maxlength="100" autocomplete="off"/>
+      <input id="notice_submit" type="submit" value="Anzeigen"/>
+  </form>
+  <% end %>
+  
+</div>
+
 
 <div id="right_column">
 
@@ -45,3 +58,5 @@
 </div>
 
 </div>
+
+  

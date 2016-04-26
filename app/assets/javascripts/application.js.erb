@@ -14,7 +14,6 @@
 //= require jquery_ujs
 //= require_tree .
 
-
 // basic info
 var baseURL = window.location.protocol + '//' + window.location.host + '/';
 var urlParams;
@@ -29,10 +28,6 @@ var urlParams;
     while (match = search.exec(query))
        urlParams[decode(match[1])] = decode(match[2]);
 })();
-var place_id = urlParams["place_id"];
-if(!place_id) {
-	place_id = 1;
-}
 var avatar_id = urlParams["avatar_id"];
 if(!avatar_id) {
 	avatar_id = 1;
@@ -60,7 +55,7 @@ var pusher = new Pusher('<%= Pusher.key %>');
 var channel = pusher.subscribe('chez_ois_chat');
 
 channel.bind('update_suggestions_' + avatar_id, function(data) {
-		console.log("pusher update received: " + JSON.stringify(data));
+		//console.log("pusher update received: " + JSON.stringify(data));
 		//check if order changed
 		server_time = data.now;
 		if(suggestions_order_changed(data)) {
@@ -85,15 +80,16 @@ channel.bind('update_notice', function(data) {
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		
 });
-channel.bind('update_highscores', function(data) {
+/*channel.bind('update_highscores', function(data) {
 		render_highscores(data);
 });
+*/
 
 // document loaded - setup up user events
 $(document).ready(function() {
 
   transmit_timeout = $("meta[name='timeout']").attr("content")
-  console.log(transmit_timeout)
+  console.log("timeout set to " + transmit_timeout)
 
 	$('.entry_link').click(function(e) {
 		if($('#display_user_name').html() == '') {
