@@ -1,5 +1,7 @@
 class SettingsController < ApplicationController
 
+  before_filter :authenticate
+
   # GET /settings
   # GET /settings.json
   def index
@@ -85,7 +87,7 @@ class SettingsController < ApplicationController
   private
   
   def setting_params
-    params.require(:setting).permit(:redirect, :redirect_to, :timeout, :custom_css, :num_display_suggestions)
+    params.require(:setting).permit(:redirect, :redirect_to, :timeout, :custom_css, :num_display_suggestions, :moderator_token)
   end
   
   

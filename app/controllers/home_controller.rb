@@ -1,11 +1,12 @@
-require 'securerandom'
+#require 'securerandom'
 
 class HomeController < ApplicationController
 
   before_filter :set_settings
+  before_filter :authenticate, :only => [:log, :moderate]
   
   def set_settings
-    @first_setting = Setting.first
+    @setting = Setting.first
     
     # user name
     if params[:user_name] 
@@ -22,9 +23,6 @@ class HomeController < ApplicationController
     # moderator notice
     @chat_item = ChatItem.order("created_at").last
     
-    @hide_pov = 1 if params[:hide_pov]
-    @hide_input = 1 if params[:hide_input]
-    @hide_notice = 1 if params[:hide_notice]
   end
 
   def log 
@@ -32,14 +30,15 @@ class HomeController < ApplicationController
   end
   
   def moderate
-    # allow moderation
-    @moderate = 1
+    
+    # allow moderation - todo add password
+    @moderate = true
     render :template => 'home/chat'
   end
 
   def chat
     # disallow moderation
-    @moderate = 0
+    @moderate = false
   end
   
   

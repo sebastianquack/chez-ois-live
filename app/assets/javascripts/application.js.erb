@@ -37,8 +37,13 @@ var sound_on = false;
 if(urlParams["sound_on"]) {
 	sound_on = true;
 }
-var server_time = null;
+var hide_input = false;
+if(urlParams["hide_input"] == "1") {
+	hide_input = true;
+}
+var server_time = null
 var transmit_timeout = 9
+var moderator_token = null
 
 // flags and cashes for suggestion handling
 
@@ -72,7 +77,7 @@ channel.bind('update_notice', function(data) {
     console.log(data)
 		$('#moderator-notice').html(data.content)
     $('#moderator-name').html(data.name)
-    if(urlParams['moderate']) {
+    if(moderator_token) {
       $('.user_name_chat').html(data.name)
     }
     $('#moderator-notice').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(300);
@@ -89,7 +94,7 @@ channel.bind('update_blacklist', function(data) {
 $(document).ready(function() {
 
   transmit_timeout = $("meta[name='timeout']").attr("content")
-  console.log("timeout set to " + transmit_timeout)
+  moderator_token = $("meta[name='moderator_token']").attr("content")
 
 	$('.entry_link').click(function(e) {
 		if($('#display_user_name').html() == '') {
@@ -234,37 +239,35 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
     }
 		
     // moderator options			
-    if(urlParams['moderate']) {
+    if(moderator_token) {
       item += render_moderator_buttons(suggestion) + "&nbsp;"
 		}
 		    
-      if(pathArray[1] != 'displays') {
-        if(pathArray[1] != 'avatar') {
+    if(!hide_input) {
 				
-					pro_text = '△ Pro';
-					contra_text = '▽ Contra';
+				pro_text = '△ Pro';
+				contra_text = '▽ Contra';
 	
-					if(user_vote) {
-						// user has already voted on this suggestion
-						if(user_vote.vote == 1) {
-							// user voted up, can now only vote down
-							item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
-						} else if(user_vote.vote == 0) {
-							// user is neutral, can vote both ways
-							item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
-							item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';		
-						} else if(user_vote.vote == -1) {
-							// user voted down, can now only vote up
-							item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
-						}
-					} else {
-						// first vote on this suggestion - user can vote both ways
-						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
+				if(user_vote) {
+					// user has already voted on this suggestion
+					if(user_vote.vote == 1) {
+						// user voted up, can now only vote down
 						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
-					}	
-        }			
-      }
-	 				
+					} else if(user_vote.vote == 0) {
+						// user is neutral, can vote both ways
+						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
+						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';		
+					} else if(user_vote.vote == -1) {
+						// user voted down, can now only vote up
+						item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
+					}
+				} else {
+					// first vote on this suggestion - user can vote both ways
+					item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=up&avatar_id=' + avatar_id + '" class="ajax" value="'+pro_text+'" />&nbsp;';
+					item += '<input type="button" class="ajax voting" href="suggestions/' + suggestion.id + '/vote?direction=down&avatar_id=' + avatar_id + '" class="ajax" value="'+contra_text+'" />';
+				}	
+    }			
+	
 		list += '<li>' + item + '</li>';
 		myIndex++;
 	});
@@ -295,7 +298,7 @@ function render_transmit_suggestion(suggestion_transmit_data) {
     item += '<span class="suggestion_details">wird übertragen...</span>';
     
     // moderator options			
-    if(urlParams['moderate']) {
+    if(moderator_token) {
       item += render_moderator_buttons(suggestion_transmit_data)
 		}
 

@@ -1,4 +1,7 @@
 class AvatarsController < ApplicationController
+
+  before_filter :authenticate
+  
   # GET /avatars
   # GET /avatars.json
   def index

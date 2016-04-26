@@ -2,6 +2,7 @@
 
 <table>
   <tr>
+    <th>avatar_id</th>
     <th>Name</th>
     <th></th>
     <th></th>
@@ -10,6 +11,7 @@
 
 <% @avatars.each do |avatar| %>
   <tr>
+    <td><%= avatar.id %></td>
     <td><%= avatar.name %></td>
     <td><%= link_to 'Show', avatar %></td>
     <td><%= link_to 'Edit', edit_avatar_path(avatar) %></td>

@@ -9,13 +9,12 @@
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>  
 
-  <% if @first_setting %>
-    <meta name="timeout" content="<%= @first_setting.timeout %>">
-    
-    <style>
-      <%= @first_setting.custom_css %>
-    </style>
-    
+  <% if @setting %>
+    <meta name="timeout" content="<%= @setting.timeout %>">    
+    <style><%= @setting.custom_css %></style>
+    <% if @moderate %>
+      <meta name="moderator_token" content="<%= @setting.moderator_token %>">  
+    <% end %>
   <% end %>
 
 </head>
