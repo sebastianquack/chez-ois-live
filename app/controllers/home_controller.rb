@@ -65,11 +65,8 @@ class HomeController < ApplicationController
 
 		params[:avatar_id] = 1 if params[:avatar_id].nil?
 		@avatar = Avatar.find_by_id(params[:avatar_id])
-  end
-
-  def pov
-		params[:avatar_id] = 1 if params[:avatar_id].nil?
-		@avatar = Avatar.find_by_id(params[:avatar_id])
+    
+    @chat_item = ChatItem.order("created_at").last
   end
 
   def highscores

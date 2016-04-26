@@ -89,7 +89,7 @@ class AvatarsController < ApplicationController
   private
 
   def avatar_params
-    params.require(:avatar).permit(:name, :gender, :pov_stream_embed, :pov_stream_embed_local, :place_id, :pushover_user_key)
+    params.require(:avatar).permit(:name, :gender, :pov_stream_embed, :pov_stream_embed_local, :place_id, :pushover_user_key, :custom_css)
   end
   
 end

@@ -11,6 +11,11 @@
 
   <% if @first_setting %>
     <meta name="timeout" content="<%= @first_setting.timeout %>">
+    
+    <style>
+      <%= @first_setting.custom_css %>
+    </style>
+    
   <% end %>
 
 </head>

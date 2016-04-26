@@ -1,3 +1,9 @@
+<% if @avatar.custom_css %>
+<style>
+  <%= @avatar.custom_css %>
+</style>
+<% end %>
+
 <div id="left_column">
 <% if params[:local_embed] %>
   <%= @avatar.pov_stream_embed_local.html_safe if @avatar.pov_stream_embed_local %>
@@ -26,6 +32,8 @@
 </div>
 
 </div>
+
+<div id="moderator_notice_area"><span id="moderator-name" class="dark"><%= @chat_item.name %></span><span class="dark">:</span> <span id="moderator-notice"><%= @chat_item.content %></span></div>
 
 </div>
 

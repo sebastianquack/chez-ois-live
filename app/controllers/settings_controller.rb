@@ -85,7 +85,7 @@ class SettingsController < ApplicationController
   private
   
   def setting_params
-    params.require(:setting).permit(:redirect, :redirect_to, :timeout)
+    params.require(:setting).permit(:redirect, :redirect_to, :timeout, :custom_css, :num_display_suggestions)
   end
   
   

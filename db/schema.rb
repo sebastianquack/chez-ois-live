@@ -9,87 +9,93 @@
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
-# It's strongly recommended to check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140903105809) do
+ActiveRecord::Schema.define(version: 20160425203921) do
 
-  create_table "avatars", :force => true do |t|
-    t.string   "name"
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "avatars", force: :cascade do |t|
+    t.string   "name",                   limit: 255
     t.text     "pov_stream_embed"
-    t.datetime "created_at",                                 :null => false
-    t.datetime "updated_at",                                 :null => false
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
     t.integer  "place_id"
     t.text     "pov_stream_embed_local"
-    t.string   "pushover_user_key"
-    t.string   "gender",                 :default => "male"
+    t.string   "pushover_user_key",      limit: 255
+    t.string   "gender",                 limit: 255, default: "male"
+    t.string   "custom_css"
   end
 
-  create_table "chat_items", :force => true do |t|
+  create_table "chat_items", force: :cascade do |t|
     t.text     "content"
-    t.string   "ip_address"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.string   "name"
-    t.string   "time_string"
+    t.string   "ip_address",  limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "name",        limit: 255
+    t.string   "time_string", limit: 255
   end
 
-  create_table "ip_blacklists", :force => true do |t|
-    t.string   "ip_address"
-    t.string   "user_name"
+  create_table "ip_blacklists", force: :cascade do |t|
+    t.string   "ip_address", limit: 255
+    t.string   "user_name",  limit: 255
     t.integer  "status"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
-  add_index "ip_blacklists", ["ip_address"], :name => "index_ip_blacklists_on_ip_address", :unique => true
+  add_index "ip_blacklists", ["ip_address"], name: "index_ip_blacklists_on_ip_address", unique: true, using: :btree
 
-  create_table "places", :force => true do |t|
+  create_table "places", force: :cascade do |t|
     t.text     "fix_stream_embed"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
-    t.string   "name"
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.string   "name",                   limit: 255
     t.text     "fix_stream_embed_local"
   end
 
-  create_table "settings", :force => true do |t|
-    t.string   "redirect_to"
+  create_table "settings", force: :cascade do |t|
+    t.string   "redirect_to",             limit: 255
     t.integer  "redirect"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.integer  "timeout"
+    t.string   "custom_css"
+    t.integer  "num_display_suggestions",             default: 4
   end
 
-  create_table "suggestions", :force => true do |t|
+  create_table "suggestions", force: :cascade do |t|
     t.text     "content"
-    t.string   "name"
+    t.string   "name",              limit: 255
     t.integer  "score"
     t.integer  "status"
-    t.string   "ip_address"
-    t.datetime "created_at",                           :null => false
-    t.datetime "updated_at",                           :null => false
-    t.string   "user_hash"
+    t.string   "ip_address",        limit: 255
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+    t.string   "user_hash",         limit: 255
     t.integer  "avatar_id"
-    t.string   "time_string"
-    t.string   "voting_started_at"
-    t.string   "name2"
-    t.boolean  "read",              :default => false
+    t.string   "time_string",       limit: 255
+    t.string   "voting_started_at", limit: 255
+    t.string   "name2",             limit: 255
+    t.boolean  "read",                          default: false
   end
 
-  create_table "user_scores", :force => true do |t|
-    t.string   "user_name"
-    t.string   "user_hash"
+  create_table "user_scores", force: :cascade do |t|
+    t.string   "user_name",  limit: 255
+    t.string   "user_hash",  limit: 255
     t.integer  "score"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
     t.integer  "avatar_id"
   end
 
-  create_table "user_votes", :force => true do |t|
+  create_table "user_votes", force: :cascade do |t|
     t.integer  "suggestion_id"
-    t.string   "user_hash"
+    t.string   "user_hash",     limit: 255
     t.integer  "vote"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
 end

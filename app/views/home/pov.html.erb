@@ -1,5 +1,0 @@
-<% if params[:local_embed] %>
-  <%= @avatar.pov_stream_embed_local.html_safe if @avatar.pov_stream_embed_local %>
-<% else %>
-	<%= @avatar.pov_stream_embed.html_safe if @avatar.pov_stream_embed %>
-<% end %>
