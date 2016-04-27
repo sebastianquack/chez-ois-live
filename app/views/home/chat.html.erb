@@ -22,7 +22,7 @@
 <% unless params[:hide_input] == "1" %>
   <div id="user_input_container" class="container">
     <form id="suggestion_input_form">
-    	  <p>Hallo, <span id="display_user_name" class="magenta user_name_chat"><%= @user_name %></span> <span id="new_name_button">(ändern)</span>. Hier steuerst du <%= @avatar.name %>! Tipp ein, was <%= (@avatar.gender == "female") ? "sie" : "er" %> tun soll und bestätige mit der Return-Taste!</p>     
+    	  <p>Hi, <span id="display_user_name" class="magenta user_name_chat"><%= @user_name %></span> <span id="new_name_button">(ändern)</span>. <%= @avatar.prompt %></p>     
         <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>
         <!--input id="suggestion_submit" type="submit" value="Los!"/-->
         <input id="chat_name" type="hidden" value="<%= @user_name %>"/>
