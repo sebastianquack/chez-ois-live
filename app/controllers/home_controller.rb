@@ -13,7 +13,7 @@ class HomeController < ApplicationController
       @user_name = params[:user_name]
     else
       @user_name = cookies[:user_name]
-      @user_name = "Stammgast" if @user_name.nil?
+      @user_name = @setting.default_username if @user_name.nil?
     end
 
     # avatar

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160427170509) do
+ActiveRecord::Schema.define(version: 20160427171732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20160427170509) do
     t.string   "custom_css"
     t.integer  "num_display_suggestions",             default: 4
     t.string   "moderator_token",                     default: "1ckemod"
+    t.string   "default_username",                    default: "Guest"
   end
 
   create_table "suggestions", force: :cascade do |t|
