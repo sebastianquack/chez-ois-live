@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160427171732) do
+ActiveRecord::Schema.define(version: 20160512102744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20160427171732) do
     t.string   "gender",                 limit: 255, default: "male"
     t.string   "custom_css"
     t.string   "prompt"
+    t.string   "input_placeholder"
   end
 
   create_table "chat_items", force: :cascade do |t|

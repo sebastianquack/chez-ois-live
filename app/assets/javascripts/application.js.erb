@@ -34,7 +34,7 @@ if(!avatar_id) {
 }
 var pathArray = window.location.pathname.split('/');
 var sound_on = false;
-if(urlParams["sound_on"]) {
+if(urlParams["sound_on"] == "1") {
 	sound_on = true;
 }
 var hide_input = false;
@@ -59,29 +59,33 @@ var transmit_suggestion = null; // cache to store current transmit suggestion
 var pusher = new Pusher('<%= Pusher.key %>');
 var channel = pusher.subscribe('chez_ois_chat');
 
-channel.bind('update_suggestions_' + avatar_id, function(data) {
-		//console.log("pusher update received: " + JSON.stringify(data));
-		//check if order changed
-		server_time = data.now;
-		if(suggestions_order_changed(data)) {
-			animate_suggestions_update = true;
-		}
-		current_suggestions = data;
-		render_suggestions(data, 'push');
-});
-channel.bind('read_suggestions', function(data) {
-    //console.log(data)
- 		read_with_queue(data.content);
-});
-channel.bind('update_notice', function(data) {
-    console.log(data)
-		$('#moderator-notice').html(data.content)
-    $('#moderator-name').html(data.name)
-    if(moderator_token) {
-      $('.user_name_chat').html(data.name)
-    }
-    $('#moderator-notice').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(300);
-});
+if(!(urlParams["hide_chat"] == "1")) {
+  channel.bind('update_suggestions_' + avatar_id, function(data) {
+  		//console.log("pusher update received: " + JSON.stringify(data));
+  		//check if order changed
+  		server_time = data.now;
+  		if(suggestions_order_changed(data)) {
+  			animate_suggestions_update = true;
+  		}
+  		current_suggestions = data;
+  		render_suggestions(data, 'push');
+  });
+  /*channel.bind('read_suggestions', function(data) {
+      //console.log(data)
+   		read_with_queue(data.content);
+  });*/
+}
+if(!(urlParams["hide_notice"] == "1")) {
+  channel.bind('update_notice', function(data) {
+      console.log(data)
+  		$('#moderator-notice').html(data.content)
+      $('#moderator-name').html(data.name)
+      if(moderator_token) {
+        $('.user_name_chat').html(data.name)
+      }
+      $('#moderator-notice').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(300);
+  });
+}
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		
 });
@@ -335,7 +339,8 @@ function updateTimers() {
         transmit_timeout = 10
       }
       if(server_time - transmit_suggestion.vote_time > transmit_timeout) { // check if is still has time
-        console.log("retiring " + transmit_suggestion.content)
+        console.log("retiring")
+        console.log(transmit_suggestion)
         retireSuggestion(transmit_suggestion.id)
         transmit_suggestion = null
       }

@@ -13,7 +13,7 @@ class SuggestionsController < ApplicationController
     if @suggestions_top.length > 0 && @suggestion_transmit == nil
       if @suggestions_top[0].score >= 0
         logger.debug "direct to transmit"
-        accept_suggestion(@suggestions_top[0])
+        accept_suggestion(@suggestions_top[0], false)
         @suggestion_transmit = @suggestions_top[0]
         @suggestions_top = @suggestions_top.to_a
         @suggestions_top.shift
@@ -46,7 +46,7 @@ class SuggestionsController < ApplicationController
 
   def list
 		# see also as_json overrides in the models
-		render json: load_suggestions(params[:avatar_id])		 
+		render json: load_suggestions(suggestion_params[:avatar_id])		 
   end
 
   # special mode for avatar list
@@ -94,7 +94,7 @@ class SuggestionsController < ApplicationController
 				:ip_address => request.remote_ip
 		)        
 
-    if params[:name] == ""
+    if suggestion_params[:name] == ""
       @suggestion.name = "Gast"
     end
 
@@ -107,8 +107,8 @@ class SuggestionsController < ApplicationController
     end
 
 		if @suggestion.save
-      Pusher.trigger('chez_ois_chat', 'update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-      #Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+      Pusher.trigger('chez_ois_chat', 'update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(suggestion_params[:avatar_id]))
+      #Pusher['chez_ois_chat'].trigger('update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(params[:avatar_id]))
       if @boost
         render json: {:status => "boost"}
       else
@@ -119,22 +119,25 @@ class SuggestionsController < ApplicationController
 
   # STEP 2 - a suggestion reaches the top of the list and become a transmit suggestion
 
-  def accept_suggestion(suggestion)
+  def accept_suggestion(suggestion, push = true)
     if suggestion.status != 3 # do this only if it hasn't been done
       suggestion.status = 3
+      suggestion.voting_started_at = Time.now.to_i # update timestamp for transmit time   
       suggestion.save
-      read_suggestion(suggestion)
-      #user_reward(suggestion, 5)
+      if(push)
+        #read_suggestion(suggestion)
+        Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+        #user_reward(suggestion, 5)
+      end
     end
   end
     
 	def accept
 		@suggestion = Suggestion.find(params[:id])
     if @suggestion.status != 3 # do this only if it hasn't been done
-      accept_suggestion(@suggestion)
-      Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
+      accept_suggestion(@suggestion, params)
       #Pusher['chez_ois_chat'].trigger('read_message', { :message => "Vorschlag angenommen: " + @suggestion.content })
-      Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
+      #Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
     end
 
 		render json: @suggestion
@@ -150,7 +153,6 @@ class SuggestionsController < ApplicationController
 
       Pusher['chez_ois_chat'].trigger('read_suggestions', {:avatar_id => params[:avatar_id], :content => speech_output})
       suggestion.read = true
-      suggestion.voting_started_at = Time.now.to_i    
       suggestion.save
     
       url = URI.parse("https://api.pushover.net/1/messages.json")
@@ -169,30 +171,30 @@ class SuggestionsController < ApplicationController
 
   # STEP 3 - a suggestions time has run out
 
-  def retire_suggestion(suggestion)
+  def retire_suggestion(suggestion, params)
     if suggestion.status != 2
 		  logger.debug 'RETIRE'
 			suggestion.status = 2
       suggestion.save		  
+      Pusher['chez_ois_chat'].trigger('update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(suggestion_params[:avatar_id]))
     end
   end
 
 	def retire
     suggestion = Suggestion.find(params[:id])
-    retire_suggestion(suggestion)
-    Pusher['chez_ois_chat'].trigger('update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(suggestion_params[:avatar_id]))
+    retire_suggestion(suggestion, params)
     render json: suggestion	
 	end
 
   # VOTING a user votes on one of the suggestions
 
 	def vote 
-		suggestion = Suggestion.find(params[:id])
+		suggestion = Suggestion.find(suggestion_params[:id])
 		user_vote = UserVote.where({
 				:user_hash => cookies[:user_hash],
 				:suggestion_id => suggestion.id}).first
 		
-		if params[:abort]
+		if suggestion_params[:abort]
 
 			now = Time.now.to_i
 			if now < (suggestion.voting_started_at.to_i + 55)
@@ -203,25 +205,25 @@ class SuggestionsController < ApplicationController
 
 			if user_vote # the user has already voted on this
 				logger.debug 'vote exists'
-				if params[:direction] == 'up' && user_vote.vote < 1
-					user_vote.vote += 2
-					suggestion.score += 2
-					user_reward(suggestion, 2)
-				elsif params[:direction] == 'down' && user_vote.vote > -1
-					user_vote.vote -= 2
-					suggestion.score -= 2
-					user_reward(suggestion, -2)
+				if suggestion_params[:direction] == 'up' && user_vote.vote < 1
+					user_vote.vote += 1
+					suggestion.score += 1
+					#user_reward(suggestion, 2)
+				elsif suggestion_params[:direction] == 'down' && user_vote.vote > -1
+					user_vote.vote -= 1
+					suggestion.score -= 1
+					#user_reward(suggestion, -2)
 				end
 				
 			else # the user votes on this for the first time
 				logger.debug 'new vote'
-				if params[:direction] == 'up' 
+				if suggestion_params[:direction] == 'up' 
 					suggestion.score += 1
-					user_reward(suggestion, 1)
+					#user_reward(suggestion, 1)
 					v = 1
 				else 
 					suggestion.score -= 1
-					user_reward(suggestion, -1)
+					#user_reward(suggestion, -1)
 					v = -1
 				end
 				user_vote = UserVote.new(
@@ -236,14 +238,14 @@ class SuggestionsController < ApplicationController
 		end			
 		
 
-		if params[:top_boost]
+		if suggestion_params[:top_boost]
 				suggestion.name2 = cookies[:user_name]
 		end
 								
 		suggestion.save
 
 		Pusher['chez_ois_chat'].trigger('update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(suggestion_params[:avatar_id]))
-		Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
+		#Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
 		render json: suggestion
 	end
     
@@ -262,7 +264,7 @@ class SuggestionsController < ApplicationController
 	end
 		
 	def user_reward(suggestion, amount)
-		unless params[:avatar_id] 
+		unless suggestion_params[:avatar_id] 
 			return
 		end
 		if(suggestion.user_hash == cookies[:user_hash]) #prevent scoring on your own suggestions
@@ -270,13 +272,13 @@ class SuggestionsController < ApplicationController
     end
 		user_score = UserScore.find(:first, :conditions => {
 				:user_hash => suggestion.user_hash,
-				:avatar_id => user_params[:avatar_id]
+				:avatar_id => suggestion_params[:avatar_id]
 		})
 		unless user_score 
 			user_score = UserScore.new(
 				:user_hash => suggestion.user_hash,
 				:user_name => suggestion.name,
-				:avatar_id => user_params[:avatar_id],
+				:avatar_id => suggestion_params[:avatar_id],
 				:score => 0
 			)
 		end
@@ -397,7 +399,7 @@ class SuggestionsController < ApplicationController
   private
 
   def suggestion_params
-    params.permit(:content, :avatar_id, :ip_address, :name, :name2, :user_hash, :score, :status, :time_string, :voting_started_at, :id)
+    params.permit(:content, :avatar_id, :ip_address, :name, :name2, :user_hash, :score, :status, :time_string, :voting_started_at, :id, :direction)
   end
 
   def user_params

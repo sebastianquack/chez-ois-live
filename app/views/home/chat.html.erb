@@ -23,7 +23,7 @@
   <div id="user_input_container" class="container">
     <form id="suggestion_input_form">
     	  <p>Hi, <span id="display_user_name" class="magenta user_name_chat"><%= @user_name %></span> <span id="new_name_button">(ändern)</span>. <%= @avatar.prompt %></p>     
-        <input id="suggestion_input" type="text" maxlength="79" autocomplete="off"/>
+        <input id="suggestion_input" type="text" maxlength="79" autocomplete="off" placeholder="<%= @avatar.input_placeholder %>"/>
         <!--input id="suggestion_submit" type="submit" value="Los!"/-->
         <input id="chat_name" type="hidden" value="<%= @user_name %>"/>
         <div id="suggestion_message"></div>
