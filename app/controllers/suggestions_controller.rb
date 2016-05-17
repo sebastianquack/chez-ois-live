@@ -147,7 +147,7 @@ class SuggestionsController < ApplicationController
       speech_output_watch = suggestion.name + ': ' + suggestion.content
       logger.debug "reading " + suggestion.content
 
-      #Pusher['chez_ois_chat'].trigger('read_suggestions', {:avatar_id => params[:avatar_id], :content => speech_output})
+      Pusher['chez_ois_chat'].trigger('read_suggestions', {:avatar_id => params[:avatar_id], :content => speech_output})
       suggestion.read = true
       suggestion.save
       
