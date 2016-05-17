@@ -13,7 +13,7 @@ class SuggestionsController < ApplicationController
     if @suggestions_top.length > 0 && @suggestion_transmit == nil
       if @suggestions_top[0].score >= 0
         logger.debug "direct to transmit"
-        accept_suggestion(@suggestions_top[0], false)
+        accept_suggestion(@suggestions_top[0])
         @suggestion_transmit = @suggestions_top[0]
         @suggestions_top = @suggestions_top.to_a
         @suggestions_top.shift
@@ -119,23 +119,19 @@ class SuggestionsController < ApplicationController
 
   # STEP 2 - a suggestion reaches the top of the list and become a transmit suggestion
 
-  def accept_suggestion(suggestion, push = true)
+  def accept_suggestion(suggestion)
     if suggestion.status != 3 # do this only if it hasn't been done
       suggestion.status = 3
       suggestion.voting_started_at = Time.now.to_i # update timestamp for transmit time   
       suggestion.save
-      if(push)
-        #read_suggestion(suggestion)
-        Pusher['chez_ois_chat'].trigger('update_suggestions_' + params[:avatar_id], load_suggestions(params[:avatar_id]))
-        #user_reward(suggestion, 5)
-      end
+      read_suggestion(suggestion)
     end
   end
     
 	def accept
 		@suggestion = Suggestion.find(params[:id])
     if @suggestion.status != 3 # do this only if it hasn't been done
-      accept_suggestion(@suggestion, params)
+      accept_suggestion(@suggestion)
       #Pusher['chez_ois_chat'].trigger('read_message', { :message => "Vorschlag angenommen: " + @suggestion.content })
       #Pusher['chez_ois_chat'].trigger('update_highscores', load_highscores)
     end
@@ -147,14 +143,14 @@ class SuggestionsController < ApplicationController
 
   def read_suggestion(suggestion)
     if !suggestion.read # read only once
-  		speech_output = suggestion.name + ' sagt: ' + suggestion.content
+      speech_output = suggestion.name + ' sagt: ' + suggestion.content
       speech_output_watch = suggestion.name + ': ' + suggestion.content
       logger.debug "reading " + suggestion.content
 
-      Pusher['chez_ois_chat'].trigger('read_suggestions', {:avatar_id => params[:avatar_id], :content => speech_output})
+      #Pusher['chez_ois_chat'].trigger('read_suggestions', {:avatar_id => params[:avatar_id], :content => speech_output})
       suggestion.read = true
       suggestion.save
-    
+      
       url = URI.parse("https://api.pushover.net/1/messages.json")
       req = Net::HTTP::Post.new(url.path)
       req.set_form_data({
