@@ -1,6 +1,6 @@
 class AvatarsController < ApplicationController
 
-  before_filter :authenticate
+  before_filter :authenticate, :except => [:list]
   
   # GET /avatars
   # GET /avatars.json
