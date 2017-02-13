@@ -227,7 +227,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
       item += " (solo)"
     }
 
-    item += ': "' + suggestion.content + '"</span><br>'
+    item += ' "' + suggestion.content + '"</span><br>'
     
   	time_string = minutes_left + ':' + pad(seconds_left);
   	if(minutes_left == 0 && seconds_left <= 5) {
@@ -292,13 +292,13 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 // render the suggestion in transmission
 function render_transmit_suggestion(suggestion_transmit_data) {
   if(suggestion_transmit_data) {
-	  var item = '<span class="suggestion_content">' + suggestion_transmit_data.name
+	  var item = '<span class="suggestion_content">' + '<span class="suggestion_name">' + suggestion_transmit_data.name + '</span>'
     if(suggestion_transmit_data.name2 == "boost") {
       item += " (Überholspur)"
     } else if (suggestion_transmit_data.name2 == "solo") {
       item += " (solo)"
     }
-    item += ': "' + suggestion_transmit_data.content + '"</span></span><br>'
+    item += ' "' + suggestion_transmit_data.content + '"</span></span><br>'
     item += '<span class="suggestion_details">wird übertragen...</span>';
     
     // moderator options			
