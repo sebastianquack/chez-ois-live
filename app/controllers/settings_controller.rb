@@ -87,7 +87,25 @@ class SettingsController < ApplicationController
   private
   
   def setting_params
-    params.require(:setting).permit(:redirect, :redirect_to, :timeout, :custom_css, :num_display_suggestions, :moderator_token, :default_username)
+    params.require(:setting).permit(
+      :redirect, 
+      :redirect_to, 
+      :timeout, 
+      :custom_css, 
+      :num_display_suggestions, 
+      :moderator_token, 
+      :default_username, 
+      :local_initial_greeting,
+      :local_name_change_button,
+      :local_name_change_prompt,
+      :local_name_change_confirm,
+      :local_suggestion_transmit_notice,
+      :local_upvote_button,
+      :local_downvote_button,
+      :local_text_to_speach_says,
+      :local_downvote_count,
+      :local_upvote_count
+    )
   end
   
   

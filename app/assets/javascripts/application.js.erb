@@ -100,6 +100,12 @@ $(document).ready(function() {
   transmit_timeout = $("meta[name='timeout']").attr("content")
   moderator_token = $("meta[name='moderator_token']").attr("content")
 
+  local_upvote_button = $("meta[name='local_upvote_button']").attr("content")
+  local_downvote_button = $("meta[name='local_downvote_button']").attr("content")
+  local_upvote_count = $("meta[name='local_upvote_count']").attr("content")
+  local_downvote_count = $("meta[name='local_downvote_count']").attr("content")
+  suggestion_transmit_notice = $("meta[name='local_suggestion_transmit_notice']").attr("content")
+
 	$('.entry_link').click(function(e) {
 		if($('#display_user_name').html() == '') {
 			$('#name_message').html('Gib erst einen Namen ein!');
@@ -235,11 +241,11 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
   	}
 		
     if(suggestion.score < 0) {
-      item += '<span class="suggestion_details warning">Contras: ' + -suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
+      item += '<span class="suggestion_details warning">'+local_downvote_count+': ' + -suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
     } else if(suggestion.score == 0) {
       item += '<span class="suggestion_details"><span class="small_countdown">(' + time_string + ')</span></span>&nbsp;';            
     } else if(suggestion.score > 0) {
-      item += '<span class="suggestion_details">Pros: ' + suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span>&nbsp;';      
+      item += '<span class="suggestion_details">'+local_upvote_count+': ' + suggestion.score + '&nbsp;<span class="small_countdown">(' + time_string + ')</span>&nbsp;';      
     }
 		
     // moderator options			
@@ -249,8 +255,8 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 		    
     if(!hide_input) {
 				
-				pro_text = '△ Pro';
-				contra_text = '▽ Contra';
+				pro_text = local_upvote_button;
+				contra_text = local_downvote_button;
 	
 				if(user_vote) {
 					// user has already voted on this suggestion
@@ -299,7 +305,7 @@ function render_transmit_suggestion(suggestion_transmit_data) {
       item += " (solo)"
     }
     item += ' "' + suggestion_transmit_data.content + '"</span></span><br>'
-    item += '<span class="suggestion_details">wird übertragen...</span>';
+    item += '<span class="suggestion_details">'+suggestion_transmit_notice+'</span>';
     
     // moderator options			
     if(moderator_token) {
@@ -360,11 +366,11 @@ function submitSuggestion(content, name) {
    	success: function(msg){
    		//console.log(msg);
 			if(msg.status == 'blacklisted') {
-   			$('#suggestion_message').html('Sorry, du wurdest gesperrt.');
+   			$('#suggestion_message').html('Sorry, you were blocked.');
    		} else if(msg.status == 'boost') {
-   			$('#suggestion_message').html('Du bist auf der Überholspur, deine Ansagen werden sofort vorgelesen!');
+   			$('#suggestion_message').html('You are solo!');
    		} else if(msg.status == 'solo') {
-   		  $('#suggestion_message').html('Psst! Nur ' + msg.name + ' darf gerade sprechen.');
+   		  $('#suggestion_message').html('Psst! Only ' + msg.name + ' is allowed to speak now.');
    		}
    	},
    	error: function(XMLHttpRequest, textStatus, errorThrown) {

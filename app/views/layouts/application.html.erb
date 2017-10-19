@@ -10,7 +10,13 @@
   <%= csrf_meta_tags %>  
 
   <% if @setting %>
-    <meta name="timeout" content="<%= @setting.timeout %>">    
+    <meta name="timeout" content="<%= @setting.timeout %>">
+    <meta name="local_upvote_button" content="<%= @setting.local_upvote_button %>">
+    <meta name="local_downvote_button" content="<%= @setting.local_downvote_button %>">
+    <meta name="local_suggestion_transmit_notice" content="<%= @setting.local_suggestion_transmit_notice %>">    
+    <meta name="local_upvote_count" content="<%= @setting.local_upvote_count %>">
+    <meta name="local_downvote_count" content="<%= @setting.local_downvote_count %>">
+    
     <style><%= @setting.custom_css %></style>
     <% if @moderate %>
       <meta name="moderator_token" content="<%= @setting.moderator_token %>">  

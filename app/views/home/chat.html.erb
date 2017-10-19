@@ -22,7 +22,7 @@
 <% unless params[:hide_input] == "1" %>
   <div id="user_input_container" class="container">
     <form id="suggestion_input_form">
-    	  <p>Hi, <span id="display_user_name" class="magenta user_name_chat"><%= @user_name %></span> <span id="new_name_button">(ändern)</span>. <%= @avatar.prompt %></p>     
+    	  <p>Hi, <span id="display_user_name" class="magenta user_name_chat"><%= @user_name %></span> <span id="new_name_button">(<%= @setting.local_name_change_button %>)</span>. <%= @avatar.prompt %></p>     
         <input id="suggestion_input" type="text" maxlength="79" autocomplete="off" placeholder="<%= @avatar.input_placeholder %>"/>
         <!--input id="suggestion_submit" type="submit" value="Los!"/-->
         <input id="chat_name" type="hidden" value="<%= @user_name %>"/>
@@ -30,11 +30,11 @@
     </form>
 
     <div id="name_container">
-      <p>Wie möchtest du heißen?</p>
+      <p><%= @setting.local_name_change_prompt %></p>
       <span id="name_message"></span>
       <form id="name_input_form">
         <input id="new_chat_name" type="text" size="10" value="" maxlength="10"/>
-        <input id="name_submit" type="submit" value="Ok"/>
+        <input id="name_submit" type="submit" value="<%= @setting.local_name_change_confirm %>"/>
       </form>
     </div>
   </div>

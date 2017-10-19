@@ -143,9 +143,9 @@ class SuggestionsController < ApplicationController
 
   def read_suggestion(suggestion)
     if !suggestion.read # read only once
-      speech_output = suggestion.name + ' sagt: ' + suggestion.content
+      speech_output = suggestion.name + ' ' + Setting.first.local_text_to_speach_says + ': ' + suggestion.content
       speech_output_watch = suggestion.name + ': ' + suggestion.content
-      logger.debug "reading " + suggestion.content
+      logger.debug "reading " + speech_output
 
       Pusher['chez_ois_chat'].trigger('read_suggestions', {:avatar_id => params[:avatar_id], :content => speech_output})
       suggestion.read = true
