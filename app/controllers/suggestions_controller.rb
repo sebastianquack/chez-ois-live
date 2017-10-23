@@ -1,3 +1,5 @@
+require 'pushover'
+
 class SuggestionsController < ApplicationController
 
   # get the current list of suggestions
@@ -162,6 +164,8 @@ class SuggestionsController < ApplicationController
       #  res.use_ssl = true
       #  res.verify_mode = OpenSSL::SSL::VERIFY_PEER
       #  res.start {|http| http.request(req) }
+      Pushover.notification(message: speech_output_watch, title: 'message', user: suggestion.avatar.pushover_user_key, token:  ENV['chez_ois_pushover_app_token'])
+
     end
   end
 
