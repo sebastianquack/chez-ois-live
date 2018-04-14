@@ -180,11 +180,13 @@ class SuggestionsController < ApplicationController
     end
   end
 
-	def retire
+  def retire
     suggestion = Suggestion.find(params[:id])
-    retire_suggestion(suggestion, params)
+    if(suggestion)
+    	retire_suggestion(suggestion, params)
+    end
     render json: suggestion	
-	end
+  end
 
   # VOTING a user votes on one of the suggestions
 
