@@ -102,6 +102,10 @@ iframe {
 	color: #aaa;
 }
 
+.suggestion_details input[type="button"] {
+	height: 1em;
+}
+
 .small_countdown {
 	color: #aaa;
 }
@@ -114,7 +118,23 @@ iframe {
 /* moderator notice */
 
 #moderator_container {
-	margin-top: 10px;
+    text-transform: uppercase;
+    font-size: 200%;
+    /* width: 100%; */
+    position: fixed;
+    display: block;
+    margin: auto;
+    top: 2ex;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255,255,255,0.98);
+    border-radius: 0.5ex;
+    padding: 1ex;
+    padding-left: 1ex;
+    /* margin: 2em; */
+    box-sizing: border-box;
+    width: calc(100% - 4ex);
+    display:none;
 }
 
 #moderator_container p {

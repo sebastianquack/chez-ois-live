@@ -56,8 +56,16 @@ var transmit_suggestion = null; // cache to store current transmit suggestion
 // ACTIVITY STARTS HERE
 
 // pusher bindings
-var pusher = new Pusher('<%= Pusher.key %>');
+// console.log('<%= Pusher.key %>')
+var pusher = new Pusher('<%= Pusher.key %>', { disableStats:true});
 var channel = pusher.subscribe('chez_ois_chat');
+
+original_alert = alert;
+alert = function(text) {
+	if (text != "Could not find stream. The stream is not live.") {
+		original_alert("alert:"+text)
+	}
+}
 
 if(!(urlParams["hide_chat"] == "1")) {
   channel.bind('update_suggestions_' + avatar_id, function(data) {
@@ -84,8 +92,17 @@ if(!(urlParams["hide_notice"] == "1")) {
         $('.user_name_chat').html(data.name)
       }
       $('#moderator-notice').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(300);
+      $('#moderator_container').slideDown(100).delay(5000).slideUp(500);
   });
 }
+$(document).ready(function(){
+	$('#moderator_container').click(function(elem){
+		console.log(this, elem)
+		$(this).fadeOut();
+	})
+})
+
+
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		
 });

@@ -39,8 +39,8 @@ AvatarChat::Application.configure do
 	Pusher.app_id = ENV['chez_ois_pusher_app_id']
   Pusher.key    = ENV['chez_ois_pusher_key']
   Pusher.secret = ENV['chez_ois_pusher_secret']
-	Pusher.url = ENV['chez_ois_pusher_url']
-  
+	Pusher.url    = ENV['chez_ois_pusher_url']
+
 	#Pusher.logger = Rails.logger
   
   config.eager_load = false
