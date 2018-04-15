@@ -1,8 +1,5 @@
 require 'pushover'
 
-# (c) lolmaus (Andrey Mikhaylov), 2014
-# MIT license http://choosealicense.com/licenses/mit/
-
 class SuggestionsController < ApplicationController
 
   # get the current list of suggestions
@@ -86,6 +83,13 @@ class SuggestionsController < ApplicationController
         render json: {:status => "solo", :name => solo_entry.user_name}
         return
       end
+    end
+
+    c = Suggestion.where("status = 1 AND avatar_id = :avatar_id AND voting_started_at > :limit", :avatar_id => suggestion_params[:avatar_id], :limit => 1.minute.ago.to_i).count 
+    logger.debug c
+    if c >= Setting.first.num_display_suggestions - 1
+      render json: {:status => "full"}
+      return
     end
       
     # create a new suggestion
