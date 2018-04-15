@@ -1,17 +1,20 @@
 require 'pushover'
 
+# (c) lolmaus (Andrey Mikhaylov), 2014
+# MIT license http://choosealicense.com/licenses/mit/
+
 class SuggestionsController < ApplicationController
 
   # get the current list of suggestions
 	def load_suggestions(avatar_id)
 
     # get the top sugestions
-    @suggestions_top = Suggestion.where("status = 1 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => avatar_id, :limit => 1.minute.ago).order("score DESC, voting_started_at ASC").limit(Setting.first.num_display_suggestions - 1)
+    @suggestions_top = Suggestion.where("status = 1 AND avatar_id = :avatar_id AND voting_started_at > :limit", :avatar_id => avatar_id, :limit => 1.minute.ago.to_i).order("score DESC, voting_started_at ASC").limit(Setting.first.num_display_suggestions - 1)
     
     # see if there is a suggestion in transmit that has been read
-    @suggestion_transmit = Suggestion.where("status = 3 AND avatar_id = :avatar_id AND voting_started_at < :limit", :avatar_id => avatar_id, :limit => 10.seconds.ago).order("voting_started_at DESC").first
+    @suggestion_transmit = Suggestion.where("status = 3 AND avatar_id = :avatar_id AND voting_started_at > :limit", :avatar_id => avatar_id, :limit => (Setting.first.timeout).seconds.ago.to_i).order("voting_started_at DESC").first
 
-    # if there is only one suggestion - and none is currently being transmitted
+    # if there is a suggestion - and none is currently being transmitted
     if @suggestions_top.length > 0 && @suggestion_transmit == nil
       if @suggestions_top[0].score >= 0
         logger.debug "direct to transmit"
@@ -32,6 +35,8 @@ class SuggestionsController < ApplicationController
 		end
 		
 		#@suggestions_accepted = Suggestion.where(:status => '1', :avatar_id => avatar_id).order("updated_at DESC").limit(1)
+
+    logger.debug "now: " + Time.now.to_i.to_s
 
     logger.debug "loading top suggestions: " + @suggestions_top.inspect
     logger.debug "loading transmit suggestion: " + @suggestion_transmit.inspect
@@ -110,6 +115,20 @@ class SuggestionsController < ApplicationController
 
 		if @suggestion.save
       Pusher.trigger('chez_ois_chat', 'update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(suggestion_params[:avatar_id]))
+
+      # check in after timeout seconds and retire suggestion
+      Thread.new(@suggestion.id, params) do |id, params|
+        logger.debug "starting vote countdown thread"
+        sleep 60
+        suggestion = Suggestion.find(id)
+        if suggestion.status == 1
+          logger.debug "retiring suggestion that didn't reach the top"
+          retire_suggestion(suggestion, params)
+        end
+        ActiveRecord::Base.connection.close
+        logger.debug "closing thread"
+      end
+
       #Pusher['chez_ois_chat'].trigger('update_suggestions_' + suggestion_params[:avatar_id], load_suggestions(params[:avatar_id]))
       if @boost
         render json: {:status => "boost"}
@@ -127,6 +146,16 @@ class SuggestionsController < ApplicationController
       suggestion.voting_started_at = Time.now.to_i # update timestamp for transmit time   
       suggestion.save
       read_suggestion(suggestion)
+
+      # check in after timeout seconds and retire suggestion
+      Thread.new(suggestion, params) do |id|
+        logger.debug "starting transmit thread"
+        sleep Setting.first.timeout
+        logger.debug "retiring suggestion"
+        retire_suggestion(suggestion, params)
+        ActiveRecord::Base.connection.close
+        logger.debug "closing thread"
+      end
     end
   end
     
@@ -199,7 +228,7 @@ class SuggestionsController < ApplicationController
 		if suggestion_params[:abort]
 
 			now = Time.now.to_i
-			if now < (suggestion.voting_started_at.to_i + 55)
+			if now < (suggestion.voting_started_at + 55)
 				suggestion.voting_started_at = now - 55
 			end
       
@@ -401,7 +430,7 @@ class SuggestionsController < ApplicationController
   private
 
   def suggestion_params
-    params.permit(:content, :avatar_id, :ip_address, :name, :name2, :user_hash, :score, :status, :time_string, :voting_started_at, :id, :direction)
+    params.permit(:content, :avatar_id, :ip_address, :name, :name2, :user_hash, :score, :status, :time_string, :s_at, :id, :direction)
   end
 
   def user_params
