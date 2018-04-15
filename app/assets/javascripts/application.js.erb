@@ -235,7 +235,7 @@ function render_top_suggestions(suggestions, user_votes, div, suggestion_type, u
 		
     // retire old suggestions
 		if(time_dif > 59) {
-			retireSuggestion(suggestion.id);
+			//retireSuggestion(suggestion.id);
 			time_left = 0;
 			minutes_left = 0;
 			seconds_left = 0;
@@ -356,7 +356,7 @@ function updateTimers() {
 		updateSuggestions();
 
 	} else { // suggestions are there
-    if(transmit_suggestion) { // there's a suggestion in transmission
+    /*if(transmit_suggestion) { // there's a suggestion in transmission
       //console.log(server_time - transmit_suggestion.vote_time)
       if(!transmit_timeout) {
         transmit_timeout = 10
@@ -367,7 +367,7 @@ function updateTimers() {
         retireSuggestion(transmit_suggestion.id)
         transmit_suggestion = null
       }
-    }
+    }*/
     //render_transmit_suggestion(transmit_suggestion)
     render_suggestions(current_suggestions, 'timer');
 	}
@@ -388,6 +388,8 @@ function submitSuggestion(content, name) {
    			$('#suggestion_message').html('You are solo!');
    		} else if(msg.status == 'solo') {
    		  $('#suggestion_message').html('Psst! Only ' + msg.name + ' is allowed to speak now.');
+   		} else if(msg.status == 'full') {
+   			$('#suggestion_message').html('Too many submissions. Please wait.');
    		}
    	},
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -397,7 +399,7 @@ function submitSuggestion(content, name) {
 }
 
 // step 2 - set suggestion to trasnmission mode
-function transmitSuggestion(suggestion_id) {
+/*function transmitSuggestion(suggestion_id) {
 	$.ajax({
 		type: "POST",
 	  url: baseURL + "suggestions/" + suggestion_id + "/accept",	  
@@ -408,11 +410,11 @@ function transmitSuggestion(suggestion_id) {
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
    		console.log(errorThrown);
    	}
- 	});	
-}
+ 	});
+}*/
 
 // step 3 - retire a suggestion when it's time has run out
-function retireSuggestion(suggestion_id) {
+/*function retireSuggestion(suggestion_id) {
 	//current_suggestions = null;
 	$.ajax({
 		type: "POST",
@@ -425,7 +427,7 @@ function retireSuggestion(suggestion_id) {
    		console.log(errorThrown);
    	}
  	});	
-}
+}*/
 
 // VOTING
 
