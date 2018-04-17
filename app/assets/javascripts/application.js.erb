@@ -60,6 +60,8 @@ var transmit_suggestion = null; // cache to store current transmit suggestion
 var pusher = new Pusher('<%= Pusher.key %>', { disableStats:true});
 var channel = pusher.subscribe('chez_ois_chat');
 
+
+// trap annoying alert when video stream is not available
 original_alert = alert;
 alert = function(text) {
 	if (text != "Could not find stream. The stream is not live.") {
