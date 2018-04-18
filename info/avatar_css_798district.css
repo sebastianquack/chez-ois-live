@@ -22,6 +22,14 @@ background: black;
 overflow:hidden;
 }
 
+/* styling the backdrop*/
+::backdrop, :root, html {
+  background: black;
+}
+::-ms-backdrop {
+  background-color: black;
+}
+
 #playerDiv {
   width: 100%;
   height:100%;

@@ -64,14 +64,6 @@ iframe {
 	margin: 1em;
 }
 
-/* styling the backdrop*/
-::backdrop, :root, html {
-  background: black;
-}
-::-ms-backdrop {
-  background-color: black;
-}
-
 /* admin */
 
 textarea {
