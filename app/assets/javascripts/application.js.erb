@@ -551,6 +551,54 @@ function updateBlacklist() {
 	$.getJSON(baseURL + 'admin/blacklist', render_blacklist);
 }
 
+// fullscreen mode
+// according to: https://davidwalsh.name/fullscreen
+
+function enterFullscreen() {
+  var element = document.documentElement
+  if(element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if(element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if(element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  } else if(element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  }
+}
+
+function exitFullscreen() {
+  if(document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if(document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if(document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
+}
+
+function handleFullscreenButtons(){
+	var fullscreenEnabled = null != (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement);	
+	$(".fullscreen_enabled").toggle(fullscreenEnabled)
+	$(".fullscreen_disabled").toggle(!fullscreenEnabled)
+}
+
+
+$(document).ready(function() {
+
+	handleFullscreenButtons()
+	$(".fullscreen").click(function(event){
+		var fullscreenEnabled = null != (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement);
+		console.log(fullscreenEnabled)
+		if (fullscreenEnabled)	{
+			exitFullscreen()
+		} else {
+			enterFullscreen()
+		}
+		setTimeout(handleFullscreenButtons,1000);
+	})
+
+})
 
 // HELPERS
 

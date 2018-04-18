@@ -55,6 +55,23 @@ iframe {
 	width: 100%;
 }
 
+/* fullscreen */
+
+.fullscreen {
+	position: absolute;
+	top:0;
+	right:0;
+	margin: 1em;
+}
+
+/* styling the backdrop*/
+::backdrop, :root, html {
+  background: black;
+}
+::-ms-backdrop {
+  background-color: black;
+}
+
 /* admin */
 
 textarea {
