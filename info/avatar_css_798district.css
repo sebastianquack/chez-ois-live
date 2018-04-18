@@ -1,21 +1,26 @@
-@media screen and (max-width: 500px) {
+@media (max-width: 800px) {
   body, input[type="text"] {
       font-size: 3vw !important;
   }
   #suggestions_container {
-    top: 9vw;
-  }
-  #suggestions_top input[type=button] {
-    position: relative;
-    top:5px;
+    top: 9vw !important;
   }  
+  body:not(.ios).fullscreenEnabled #suggestions_container {
+    top: 10vw !important;
+  }
+  body:not(.ios).fullscreenEnabled #moderator_container {
+    top: 1em !important;
+  }
   #suggestion_transmit, #suggestions_top ul li {
     font-size:100% !important;
+  }
+  #suggestion_input_form p {
+    font-size: 85%;
   }
 }
 
 body {
-font-size: 12px;
+font-size: 14px;
 color: white;
 
 background: black;
@@ -52,6 +57,21 @@ margin-left: auto;
 margin-right: auto;
 }
 
+
+@keyframes blink {
+  0% {opacity: 0}
+  /*49%{opacity: 0}*/
+  50% {opacity: 1}
+}
+
+#suggestion_transmit .suggestion_details {
+  animation: blink 1.5s infinite;
+}
+
+.small_countdown {
+  display: none;
+}
+
 #suggestion_input, #new_chat_name {
 margin-left: 5px;
 margin-right: 5px;
@@ -75,6 +95,7 @@ color: white;
 #suggestion_input_form p {
 padding: 5px;
 }
+
 #suggestion_input, #new_chat_name {
 padding: 5px;
 }
@@ -135,11 +156,15 @@ color: #fff;
 li span.warning {
 color: blue !important;
 }
+
 #moderator_container {
   text-transform:uppercase;
   position: absolute;
   top:0;
   left:0;
+}
+body:not(.ios).fullscreenEnabled #moderator_container {
+  top: 1em;
 }
 
 .moderator-name {
@@ -153,6 +178,9 @@ color: white;
    top: 30px;
    padding-left: 5px;
   box-sizing: border-box;
+}
+body:not(.ios).fullscreenEnabled #suggestions_container {
+  top: 45px;
 }
 
 #user_input_container {

@@ -581,11 +581,13 @@ function handleFullscreenButtons(){
 	var fullscreenEnabled = null != (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement);	
 	$(".fullscreen_enabled").toggle(fullscreenEnabled)
 	$(".fullscreen_disabled").toggle(!fullscreenEnabled)
+	$("body").toggleClass("fullscreenEnabled", fullscreenEnabled)
 }
 
+$(document).on("webkitfullscreenchange mozfullscreenchange MSFullscreenChange webkitfullscreenchange webkitfullscreenchange", handleFullscreenButtons)
 
 $(document).ready(function() {
-
+	
 	handleFullscreenButtons()
 	$(".fullscreen").click(function(event){
 		var fullscreenEnabled = null != (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement);
@@ -598,6 +600,16 @@ $(document).ready(function() {
 		setTimeout(handleFullscreenButtons,1000);
 	})
 
+})
+
+// iOS hacks
+
+var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+
+$(document).ready(function() {
+	if (iOS) {
+		$("body").addClass("ios")
+	}
 })
 
 // HELPERS

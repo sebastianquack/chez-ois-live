@@ -64,6 +64,10 @@ iframe {
 	margin: 1em;
 }
 
+.ios .fullscreen {
+	display: none;
+}
+
 /* admin */
 
 textarea {
