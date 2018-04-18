@@ -600,6 +600,13 @@ $(document).ready(function() {
 
 })
 
+// iOS Safari scroll top to hide address bar
+window.addEventListener( “load”, function () {
+setTimeout( function () {
+window.scrollTo( 0, 1 );
+}, 0 );
+});
+
 // HELPERS
 
 // resets links in suggestionlist after reload
