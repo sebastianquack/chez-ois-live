@@ -42,6 +42,8 @@ AvatarChat::Application.configure do
 	Pusher.url    = ENV['chez_ois_pusher_url']
 
 	#Pusher.logger = Rails.logger
+
+  config.avatar_css_path = "info/avatar_css_798district.css"
   
   config.eager_load = false
   

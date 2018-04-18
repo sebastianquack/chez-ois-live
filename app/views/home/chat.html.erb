@@ -1,7 +1,11 @@
-<% if @avatar.custom_css %>
-<style>
-  <%= @avatar.custom_css %>
-</style>
+<% if Rails.configuration.try(:avatar_css_path).present? %>
+  <style>
+    <%= File.open(Rails.configuration.avatar_css_path).read.html_safe %>
+  </style>
+<% elsif @avatar.custom_css %>
+  <style>
+    <%= @avatar.custom_css %>
+  </style>
 <% end %>
 
 <% unless params[:hide_pov] == "1" %>
