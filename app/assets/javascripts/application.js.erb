@@ -94,16 +94,8 @@ if(!(urlParams["hide_notice"] == "1")) {
         $('.user_name_chat').html(data.name)
       }
       $('#moderator-notice').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(300);
-      $('#moderator_container').slideDown(100).delay(5000).slideUp(500);
   });
 }
-$(document).ready(function(){
-	$('#moderator_container').click(function(elem){
-		console.log(this, elem)
-		$(this).fadeOut();
-	})
-})
-
 
 channel.bind('update_blacklist', function(data) {
 		render_blacklist(data);		
