@@ -62,12 +62,12 @@ var channel = pusher.subscribe('chez_ois_chat');
 
 
 // trap annoying alert when video stream is not available
-original_alert = alert;
-alert = function(text) {
-	if (text != "Could not find stream. The stream is not live.") {
-		original_alert("alert:"+text)
-	}
-}
+//original_alert = alert;
+//alert = function(text) {
+//	if (text != "Could not find stream. The stream is not live.") {
+//		original_alert(text)
+//	}
+//}
 
 if(!(urlParams["hide_chat"] == "1")) {
   channel.bind('update_suggestions_' + avatar_id, function(data) {
