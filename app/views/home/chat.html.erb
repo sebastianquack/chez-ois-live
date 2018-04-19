@@ -4,7 +4,7 @@
   </style>
 <% elsif @avatar.custom_css %>
   <style>
-    <%= @avatar.custom_css %>
+    <%= @avatar.custom_css.html_safe %>
   </style>
 <% end %>
 
