@@ -587,7 +587,7 @@ function handleFullscreenButtons(){
 $(document).on("webkitfullscreenchange mozfullscreenchange MSFullscreenChange webkitfullscreenchange webkitfullscreenchange", handleFullscreenButtons)
 
 $(document).ready(function() {
-	
+
 	handleFullscreenButtons()
 	$(".fullscreen").click(function(event){
 		var fullscreenEnabled = null != (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement);
@@ -602,9 +602,10 @@ $(document).ready(function() {
 
 })
 
-// iOS hacks
+// iOS / Android detection
 
 var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+//var android = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
 $(document).ready(function() {
 	if (iOS) {
