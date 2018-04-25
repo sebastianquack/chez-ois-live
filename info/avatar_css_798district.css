@@ -20,7 +20,7 @@
 }
 
 body {
-font-size: 25px;
+font-size: 35px;
 color: white;
 
 background: black;
@@ -39,6 +39,7 @@ overflow:hidden;
   width: 100%;
   height:100%;
   height: 57vw;
+  background-color: #333;
 }
 
 #playerDiv video {
@@ -100,17 +101,17 @@ padding: 5px;
 padding: 5px;
 }
 #display_user_name {
-color: Yellow;
+color: blue;
 }
 #suggestion_message {
 padding: 5px;
-color: red;
+color: #f80060;
 }
 #suggestion_transmit, #suggestions_top ul li {
 padding: 5px;
 font-size: 85%;
 margin-bottom: 5px;
-color: white;
+color: yellow;
 }
 
 #suggestion_transmit br, #suggestions_top ul li br {
@@ -146,7 +147,7 @@ color: white;
   padding-right: 1ex;
 }
 #suggestions_top ul li {
-color: #fff;
+color: yellow;
 }
 .suggestion_name {
  color: lightblue;
@@ -169,7 +170,7 @@ color: blue !important;
 }
 
 #moderator_container {
-  text-transform:uppercase;
+ 
   position: absolute;
   top:0;
   left:0;
@@ -179,20 +180,22 @@ body:not(.ios).fullscreenEnabled #moderator_container {
 }
 
 .moderator-name {
-color: red;
+color: #f80060;
+     text-transform:lowercase;
 }
 #moderator-notice {
 color: white;
+    text-transform:uppercase;
 }
 #suggestions_container {
    position: absolute;
-   top: 45px;
+   top: 55px;
    padding-left: 5px;
   box-sizing: border-box;
 }
 /*body.android.fullscreenEnabled #suggestions_container*/ 
 body:not(.ios).fullscreenEnabled #suggestions_container {
-  top: 60px;
+  top: 70px;
 }
 
 #user_input_container {
@@ -202,17 +205,26 @@ body:not(.ios).fullscreenEnabled #suggestions_container {
    color: white;
 }
 
-body.ios #user_input_container
+body #user_input_container
+/*body.ios #user_input_container*/
 /*body.android.fullscreenEnabled #user_input_container*/ {
   /*top: 57vw;*/
   bottom: unset;
-  position: static;
+  position: relative;
+  top:-45px;
   /*
   bottom: calc(100vh - 43vw); /* 100vw - 57vw 
   transform: translateY(100%);
   background-color: red;*/
 }
-body.ios
+@media (max-width: 800px) {
+  body #user_input_container {
+    top:-4.8vw;
+  }
+}
+
+body
+/*body.ios*/
 /*body.android.fullscreenEnabled*/ {
   overflow:visible;
 }
