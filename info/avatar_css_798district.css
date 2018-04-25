@@ -97,6 +97,10 @@ color: white;
 padding: 5px;
 }
 
+#suggestion_input_form > p:first-child {
+display:none;
+}
+
 #suggestion_input, #new_chat_name {
 padding: 5px;
 }
@@ -210,8 +214,8 @@ body #user_input_container
 /*body.android.fullscreenEnabled #user_input_container*/ {
   /*top: 57vw;*/
   bottom: unset;
-  position: relative;
-  top:-45px;
+  position: absolute;
+  top:57.1vw;
   /*
   bottom: calc(100vh - 43vw); /* 100vw - 57vw 
   transform: translateY(100%);
@@ -219,7 +223,7 @@ body #user_input_container
 }
 @media (max-width: 800px) {
   body #user_input_container {
-    top:-4.8vw;
+    top:57.1vw;
   }
 }
 
