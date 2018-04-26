@@ -38,7 +38,7 @@ overflow:hidden;
 #playerDiv {
   width: 100%;
   height:100%;
-  height: 57vw;
+  height: 56.4vw; /* aspect ratio of the video stream */
   background-color: #333;
 }
 
@@ -95,10 +95,6 @@ color: white;
 
 #suggestion_input_form p {
 padding: 5px;
-}
-
-#suggestion_input_form > p:first-child {
-display:none;
 }
 
 #suggestion_input, #new_chat_name {
@@ -207,23 +203,27 @@ body:not(.ios).fullscreenEnabled #suggestions_container {
    bottom: 5px;
    left: 0px;
    color: white;
+   z-index: 100;
 }
 
 body #user_input_container
 /*body.ios #user_input_container*/
 /*body.android.fullscreenEnabled #user_input_container*/ {
-  /*top: 57vw;*/
+  /*top: 56.4vw;*/
   bottom: unset;
   position: absolute;
-  top:57.1vw;
+  top:56.4vw;
+  transform: translateY(calc(-100% + 45px));
   /*
-  bottom: calc(100vh - 43vw); /* 100vw - 57vw 
+  bottom: calc(100vh - 43vw); /* 100vw - 56.4vw 
   transform: translateY(100%);
   background-color: red;*/
 }
 @media (max-width: 800px) {
   body #user_input_container {
-    top:57.1vw;
+    top:56.4vw;
+    transform: translateY(-3.7vw);
+    transform: translateY(calc(-3.7vw - 12px));
   }
 }
 

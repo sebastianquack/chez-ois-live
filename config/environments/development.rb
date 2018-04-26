@@ -43,7 +43,7 @@ AvatarChat::Application.configure do
 
 	#Pusher.logger = Rails.logger
 
-  config.avatar_css_path = "info/avatar_css_798district.css"
+  config.avatar_css_path = "custom_css/avatar_css_798district.css"
   
   config.eager_load = false
   

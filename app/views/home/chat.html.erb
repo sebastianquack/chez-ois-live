@@ -1,12 +1,6 @@
-<% if Rails.configuration.try(:avatar_css_path).present? %>
-  <style>
-    <%= File.open(Rails.configuration.avatar_css_path).read.html_safe %>
-  </style>
-<% elsif @avatar.custom_css %>
-  <style>
-    <%= @avatar.custom_css.html_safe %>
-  </style>
-<% end %>
+<style>
+  <%= @avatar_css %>
+</style>
 
 <% unless params[:hide_pov] == "1" %>
   <% if params[:local_embed] %>
