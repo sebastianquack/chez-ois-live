@@ -104,7 +104,9 @@ class SettingsController < ApplicationController
       :local_downvote_button,
       :local_text_to_speach_says,
       :local_downvote_count,
-      :local_upvote_count
+      :local_upvote_count,
+      :local_max_char,
+      :local_max_suggest
     )
   end
   

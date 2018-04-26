@@ -116,6 +116,8 @@ $(document).ready(function() {
   local_upvote_count = $("meta[name='local_upvote_count']").attr("content")
   local_downvote_count = $("meta[name='local_downvote_count']").attr("content")
   suggestion_transmit_notice = $("meta[name='local_suggestion_transmit_notice']").attr("content")
+  local_max_char = $("meta[name='local_max_char']").attr("content")
+  local_max_suggest = $("meta[name='local_max_suggest']").attr("content")
 
 	$('.entry_link').click(function(e) {
 		if($('#display_user_name').html() == '') {
@@ -134,7 +136,7 @@ $(document).ready(function() {
 
 	$('#suggestion_input').keydown(function(e) {
 		if($(this).val().length >= 79) {
-			$('#suggestion_message').html('Bitte maximal 80 Zeichen!');
+			$('#suggestion_message').html(local_max_char);
 		} else {
 			$('#suggestion_message').html('');
 		}
@@ -383,7 +385,7 @@ function submitSuggestion(content, name) {
    		} else if(msg.status == 'solo') {
    		  $('#suggestion_message').html('Psst! Only ' + msg.name + ' is allowed to speak now.');
    		} else if(msg.status == 'full') {
-   			$('#suggestion_message').html('Too many submissions. Please wait.');
+   			$('#suggestion_message').html(local_max_suggest);
    		}
    	},
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
