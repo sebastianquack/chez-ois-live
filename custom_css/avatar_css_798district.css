@@ -176,7 +176,7 @@ color: blue !important;
   left:0;
 }
 body:not(.ios).fullscreenEnabled #moderator_container {
-  top: 1em;
+  top: 16px; /* assumed android top bar height */
 }
 
 .moderator-name {
