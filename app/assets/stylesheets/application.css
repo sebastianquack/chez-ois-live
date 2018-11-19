@@ -9,6 +9,7 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require emojis.css
  */
 
 
@@ -81,6 +82,10 @@ textarea {
 	padding: 10px;
 }
 
+#suggestion_input_form #greeting {
+	position: relative;
+}
+
 #display_user_name {
 	color: #e71660;
 }
@@ -99,6 +104,17 @@ textarea {
 #suggestion_message {
 	padding: 10px;
 	color: #e71660;
+}
+
+#emojis {
+	position: absolute;
+	right:0.5em;
+	bottom:0.2em;
+	display: block;
+}
+
+#emojis > * {
+	cursor: pointer;
 }
 
 /* suggestions list with voting*/

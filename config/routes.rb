@@ -18,6 +18,9 @@ AvatarChat::Application.routes.draw do
   # user actions on user name  
   post '/suggestions/update_user_name' => 'suggestions#update_user_name'
 
+  # send emoji
+  post '/suggestions/emoji' => 'suggestions#emoji'
+
   # moderator actions
   get '/admin/blacklist' => 'suggestions#blacklist'
   post '/admin/block' => 'suggestions#block'

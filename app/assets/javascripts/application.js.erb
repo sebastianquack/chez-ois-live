@@ -105,6 +105,12 @@ channel.bind('update_blacklist', function(data) {
 });
 */
 
+channel.bind('emoji', function(data) {
+	var code = data.split("_")[1]
+	console.log(code);
+	spawnEmoji(code)
+});
+
 // document loaded - setup up user events
 $(document).ready(function() {
 
@@ -168,7 +174,12 @@ $(document).ready(function() {
     $('#name_container').slideDown();    
     $('#suggestion_input_form').hide();
   });
-
+  
+  $('#emoji-heart').click(function(event) {
+		var emoji = event.target.dataset.code
+    submitEmoji(emoji)
+	});
+	
   // get things going
 	updateSuggestions();	
   // updateHighscores();
@@ -488,6 +499,20 @@ function submitNotice(name, content) {
    	data: "content=" + content + "&name=" + name,
    	error: function(XMLHttpRequest, textStatus, errorThrown) {
    		console.log(errorThrown);
+   	}
+ 	});
+}
+
+function submitEmoji(code) {
+	$.ajax({
+		type: "POST",
+	  url: baseURL + "suggestions/emoji",
+   	data: "code=" + code,
+   	success: function(msg){
+   		// console.log("emoji succes", msg);
+   	},
+   	error: function(XMLHttpRequest, textStatus, errorThrown) {
+   		console.log("emoji fail", errorThrown);
    	}
  	});
 }

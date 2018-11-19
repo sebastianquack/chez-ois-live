@@ -325,6 +325,17 @@ class SuggestionsController < ApplicationController
 		user_score.save
 	end
 
+  # EMOJIS
+
+  def emoji 
+    code = user_params[:code]
+    logger.debug code
+		if(code)
+      Pusher['chez_ois_chat'].trigger('emoji', 'emoji_' + code)
+		end
+		render json: {code: code}
+	end 
+
   # HIGHSCORES
 
 	def load_highscores 	
@@ -438,7 +449,7 @@ class SuggestionsController < ApplicationController
   end
 
   def user_params
-    params.permit(:name, :avatar_id)
+    params.permit(:name, :avatar_id, :code)
   end
   
 

@@ -1,0 +1,53 @@
+/** emoji animation **/
+
+#emoji_canvas {
+  height: 100vh;
+	width: 100vw;
+	top: 0;
+	z-index: 1001;
+	overflow: hidden;
+	position: fixed;
+	pointer-events: none;
+}
+
+.emoji {
+  color: red;
+  position: absolute;
+	animation: wobble 3s ease-in-out 0.1s infinite alternate, moveUp 6s linear 0s 1 forwards/*, moveSide 12s linear 1s infinite alternate*/;
+	will-change: transform, left, bottom;
+}
+
+.emoji { font-size:30px; }  
+@media screen and (max-width:680px) {
+  .emoji { font-size:8vw; }  
+}
+
+@keyframes wobble {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-70vw);
+  }
+}
+
+@keyframes moveUp {
+  from {
+    bottom:0vh;
+  }
+
+  to {
+    bottom: 110vh;
+  }
+}
+
+@keyframes moveSide {
+  from {
+    left:0vw;
+  }
+
+  to {
+    left: -10vw;
+  }
+}
