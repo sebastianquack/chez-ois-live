@@ -154,6 +154,7 @@ textarea {
 /* moderator notice */
 
 #moderator_container {
+
 }
 
 #moderator_container p {
@@ -162,4 +163,28 @@ textarea {
 
 .moderator-name {
 	color: #e71660;
+}
+
+#notice_input_form {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+#notice_input_form input {
+	padding: 2px;
+}
+
+#notice_submit {
+  display: block;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 18px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+	box-sizing: border-box;
+	font-family: "Roboto slab", sans-serif;
+  border: solid 5px #c9c9c9;
+  transition: border 0.3s;
 }
