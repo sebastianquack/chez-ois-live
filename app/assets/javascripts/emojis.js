@@ -1,9 +1,9 @@
 emojimap = [
-  [':D',"😂"],
-  [':o',"😯"],
-  [":'(","😢"],
-  ["<3","❤️"],
-  [":(","😡"],
+  [':D' ,"🤣", "rotfl.png"],
+  [':o' ,"😯", "surprised.png"],
+  [":'(","😢", "crying.png"],
+  ["<3" ,"❤️", "heart.png"],
+  [":(" ,"😠", "angry.png"],
 ]
 
 function spawnEmoji(code) {
@@ -13,13 +13,14 @@ function spawnEmoji(code) {
       if (entry[0] == code) i = j
     })
   }
-  dispatchEmoji(emojimap[i][1])
+  dispatchEmoji(emojimap[i][1], emojimap[i][2])
 }
 
-function dispatchEmoji(inner) {
+function dispatchEmoji(text, src) {
   var canvas = document.getElementById('emoji_canvas');
-  var emoji = document.createElement("span");
-  emoji.innerHTML = inner;
+  var emoji = document.createElement("img");
+  emoji.setAttribute("src", src)
+  emoji.setAttribute("alt", text)
   emoji.setAttribute("class", "emoji")
   var durationString = rand(2,4) +"s," + rand(4,8) +"s"
   emoji.style.animationDuration = durationString;

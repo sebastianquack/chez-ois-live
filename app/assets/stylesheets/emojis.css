@@ -17,10 +17,19 @@
 	will-change: transform, left, bottom;
 }
 
-.emoji { font-size:30px; }  
-@media screen and (max-width:680px) {
-  .emoji { font-size:8vw; }  
+#emojis img, .emoji {
+	min-height: 1.2em;
+	height: 7vw;
+	width: auto;
 }
+
+@media screen and (min-width: 800px) {
+	#emojis img, .emoji {
+		height: 1.2em;
+		width: auto;
+	}	
+}
+
 
 @keyframes wobble {
   from {
